@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
         private authService: AuthService,
         private breadcrumbService: BreadcrumbService,
         private titleService: Title,
-        modalConfig: NgbModalConfig,
+        private modalConfig: NgbModalConfig,
         tooltipConfig: NgbTooltipConfig
     ) {
         titleService.setTitle(environment.siteName);
@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
         modalConfig.scrollable = false;
         tooltipConfig.placement = 'top';
         tooltipConfig.openDelay = 750;
-        //tooltipConfig.closeDelay = 75000;
     }
 
     ngOnInit(): void {

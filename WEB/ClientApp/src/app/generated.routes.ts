@@ -430,6 +430,7 @@ export const GeneratedRoutes: Route[] = [
         canActivateChild: [AccessGuard],
         component: FolderListComponent,
         data: {
+            menu: 'admin',
             submenu: 'folders',
             breadcrumb: 'Folders'
         },
@@ -440,7 +441,7 @@ export const GeneratedRoutes: Route[] = [
                 canActivate: [AccessGuard],
                 canActivateChild: [AccessGuard],
                 data: {
-                    menu: '',
+                    menu: 'admin',
                     submenu: 'folders',
                     breadcrumb: 'Add Folder'
                 },
@@ -451,6 +452,7 @@ export const GeneratedRoutes: Route[] = [
                         canActivate: [AccessGuard],
                         canActivateChild: [AccessGuard],
                         data: {
+                            menu: 'admin',
                             submenu: 'folderContents',
                             breadcrumb: 'Add Folder Content'
                         }

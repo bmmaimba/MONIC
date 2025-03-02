@@ -45,9 +45,15 @@ namespace WEB.Controllers
         {
             if (string.IsNullOrWhiteSpace(publicCode)) return BadRequest("Questionnaire Public Code not provided");
 
-            var questionnaire = await db.Questionnaires
+            var questionnaires = await db.Questionnaires
                 .Include(o => o.EntityType)
-                .FirstOrDefaultAsync(o => o.PublicCode == publicCode);
+                .Where(o => o.PublicCode == publicCode)
+                .Take(2)
+                .ToListAsync();
+
+            if (questionnaires.Count > 1) return BadRequest("Multiple Questionnaires found with the same Public Code");
+
+            var questionnaire = questionnaires.FirstOrDefault();
 
             if (questionnaire == null) return NotFound();
 
@@ -322,28 +328,29 @@ namespace WEB.Controllers
             response.LastAnsweredOnUtc = DateTime.UtcNow;
             db.Entry(response).State = EntityState.Modified;
 
-            using var transactionScope = Utilities.General.CreateTransactionScope();
-
-            try
+            using (var transactionScope = Utilities.General.CreateTransactionScope())
             {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                if (ex.InnerException != null && ex.InnerException is SqlException && ((SqlException)ex.InnerException).Number == 2601)
-                    return BadRequest("ANSWEREXISTS");
-                else throw;
-            }
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException is SqlException && ((SqlException)ex.InnerException).Number == 2601)
+                        return BadRequest("ANSWEREXISTS");
+                    else throw;
+                }
 
-            if (response.Questionnaire.CalculateProgress)
-            {
-                await response.CalculateProgressAsync(db);
-                // todo: use a transaction?
-                db.Entry(response).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-            }
+                if (response.Questionnaire.CalculateProgress)
+                {
+                    await response.CalculateProgressAsync(db);
+                    // todo: use a transaction?
+                    db.Entry(response).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                }
 
-            transactionScope.Complete();
+                transactionScope.Complete();
+            }
 
             // return the progress values
             return Ok(

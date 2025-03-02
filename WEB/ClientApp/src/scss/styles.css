@@ -12,6 +12,7 @@ body#app {
     }
 
     .navbar img.navbar-brand-img {
+        width: 100%;
         height: initial;
     }
 
@@ -55,6 +56,16 @@ body#app {
 .widget .subheader {
     line-height: 1;
 }
+
+.widget .card .card-header .card-header-title > .mw-100 {
+    padding-right: 1rem;
+}
+
+    .widget .card .card-header .card-header-title > .mw-100 h4 {
+        overflow-x: clip;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 
 .widgetInfo {
     text-overflow: ellipsis;
@@ -405,6 +416,10 @@ fieldset.group .form-check {
         margin-top: 10px;
     }
 
+    fieldset.group .form-check.form-switch {
+        height: 40px;
+    }
+
 .card-header.form-section {
     padding-top: 0.624999375rem !important;
     padding-bottom: 0.624999375rem !important;
@@ -480,7 +495,7 @@ input[type=radio].form-check-input {
 }
 
 .bs-tooltip-bottom > * {
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .bs-tooltip-start > * {
@@ -588,12 +603,37 @@ table.table-hover > tbody > tr:hover > td {
                 padding: 2px 0 !important;
             }
 
-.table tbody tr td::before,
-.table tbody tr td::before,
-.table tbody tr th::before,
-.table tbody tr th::before {
+    .card.card-primary .card-footer {
+        padding-top: 0.624999375rem !important;
+        padding-bottom: 0.624999375rem !important;
+        background-color: #f7f7f7;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+    }
+
+.table tbody tr td::before, .table tbody tr td::before, .table tbody tr th::before, .table tbody tr th::before {
     background-color: none !important;
     position: unset !important;
     height: unset !important;
     width: unset !important;
+}
+
+.btn i.fa, .btn i.fas {
+    display: none !important;
+}
+
+.input-group .btn i.fa, .input-group .btn i.fas, .btn.show-icons i.fa, .btn.show-icons i.fas {
+    display: inline-block !important;
+}
+
+.hover-primary:hover {
+    color: #0d6efd !important;
+}
+
+.dropdown-toggle:not(.dropdown-toggle-split)::after {
+    margin-left: 1rem;
+}
+
+.dropdown .dropdown-toggle::after {
+    padding-left: 1em;
 }
