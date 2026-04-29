@@ -9,12 +9,12 @@ import { Category } from '../../common/models/category.model';
 
 @NgComponent({
     selector: 'subcategory-modal',
-    templateUrl: './subcategory.modal.component.html'
+    templateUrl: './subcategory.modal.component.html',
+    standalone: false
 })
 export class SubcategoryModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Subcategory[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: SubcategorySearchOptions = new SubcategorySearchOptions();
     public subcategories: Subcategory[];
@@ -23,6 +23,7 @@ export class SubcategoryModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Subcategory> = new EventEmitter<Subcategory>();
     @Output() changes: EventEmitter<Subcategory[]> = new EventEmitter<Subcategory[]>();
+    @Input() selectedItems: Subcategory[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

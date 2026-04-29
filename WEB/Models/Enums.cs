@@ -25,7 +25,8 @@ namespace WEB.Models
     {
         Currency,
         Number,
-        Percent
+        Percent,
+        OptionList
     }
 
     public enum DateType
@@ -39,7 +40,7 @@ namespace WEB.Models
     {
         Text,
         Date,
-        Picklist,
+        OptionList,
         File,
         YesNo
     }
@@ -53,7 +54,8 @@ namespace WEB.Models
     public enum IndicatorType
     {
         Collected,
-        Calculated
+        Calculated,
+        Group
     }
 
     public enum ItemType
@@ -64,7 +66,9 @@ namespace WEB.Models
         Component,
         Relationship,
         Answer,
-        Folder
+        Folder,
+        Category,
+        Subcategory
     }
 
     public enum LogFrameRowType
@@ -228,6 +232,8 @@ namespace WEB.Models
                     return "Number";
                 case DataType.Percent:
                     return "Percent";
+                case DataType.OptionList:
+                    return "Option List";
                 default:
                     return null;
             }
@@ -256,8 +262,8 @@ namespace WEB.Models
                     return "Text";
                 case FieldType.Date:
                     return "Date";
-                case FieldType.Picklist:
-                    return "Picklist";
+                case FieldType.OptionList:
+                    return "Option List";
                 case FieldType.File:
                     return "File";
                 case FieldType.YesNo:
@@ -288,6 +294,8 @@ namespace WEB.Models
                     return "Collected";
                 case IndicatorType.Calculated:
                     return "Calculated";
+                case IndicatorType.Group:
+                    return "Group";
                 default:
                     return null;
             }
@@ -311,6 +319,10 @@ namespace WEB.Models
                     return "Answer";
                 case ItemType.Folder:
                     return "Folder";
+                case ItemType.Category:
+                    return "Category";
+                case ItemType.Subcategory:
+                    return "Subcategory";
                 default:
                     return null;
             }

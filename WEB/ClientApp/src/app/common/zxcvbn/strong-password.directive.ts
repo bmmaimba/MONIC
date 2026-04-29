@@ -12,7 +12,7 @@ import {
     Validators
 } from '@angular/forms';
 
-import * as zxcvbn from 'zxcvbn';
+import zxcvbn from 'zxcvbn';
 
 /* Assess password strength via zxcvbn library  */
 export function StrongPasswordValidator(level: string = '2', user_inputs: string[] = []): ValidatorFn {
@@ -37,7 +37,8 @@ export function StrongPasswordValidator(level: string = '2', user_inputs: string
 
 @Directive({
     selector: '[strongPassword]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: StrongPasswordValidatorDirective, multi: true }]
+    providers: [{ provide: NG_VALIDATORS, useExisting: StrongPasswordValidatorDirective, multi: true }],
+    standalone: false
 })
 export class StrongPasswordValidatorDirective implements Validator, OnChanges {
     @Input() strongPassword: string;

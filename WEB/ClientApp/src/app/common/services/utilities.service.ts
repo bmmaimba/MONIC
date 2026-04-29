@@ -16,11 +16,11 @@ export class UtilitiesService {
     }
 
     getHeight(size: WidgetSizes): number {
-        if (size === WidgetSizes.ExtraSmall) return 150;
-        else if (size === WidgetSizes.Small) return 250;
-        else if (size === WidgetSizes.Medium) return 350;
-        else if (size === WidgetSizes.Large) return 450;
-        else if (size === WidgetSizes.ExtraLarge) return 550;
+        if (size === WidgetSizes.ExtraSmall) return 250;
+        else if (size === WidgetSizes.Small) return 350;
+        else if (size === WidgetSizes.Medium) return 450;
+        else if (size === WidgetSizes.Large) return 550;
+        else if (size === WidgetSizes.ExtraLarge) return 650;
         throw "Invalid size in getHeight";
     }
 
@@ -37,10 +37,14 @@ export class UtilitiesService {
             else 
                 value = undefined;
 
+            if (value == null) return '';
+
             if (indicator.dataType === DataTypes.Percent) return this.percentPipe.transform(value, `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale);
-            if (indicator.dataType === DataTypes.Number) return this.decimalPipe.transform(value, `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale);
-            if (indicator.dataType === DataTypes.Currency) return this.currencyPipe.transform(value, `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale);
-            throw "Unhandled Indicator.DataType";
+            return indicator.prefix + this.decimalPipe.transform(value, `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale) + indicator.suffix;
+
+            //if (indicator.dataType === DataTypes.Number) return this.decimalPipe.transform(value, `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale);
+            //if (indicator.dataType === DataTypes.Currency) return this.currencyPipe.transform(value, indicator.units, 'symbol', `1.${indicator.decimalPlaces}-${indicator.decimalPlaces}`, this.locale);
+            //throw "Unhandled Indicator.DataType";
         };
     }
 }

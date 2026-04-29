@@ -17,7 +17,7 @@ namespace WEB.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -320,8 +320,8 @@ namespace WEB.Migrations
                         .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -359,7 +359,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Answers_ResponseId_QuestionId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("WEB.Models.AnswerOption", b =>
@@ -375,7 +375,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("QuestionOptionId");
 
-                    b.ToTable("AnswerOptions", (string)null);
+                    b.ToTable("AnswerOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.Category", b =>
@@ -407,7 +407,31 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Category_Name");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("WEB.Models.Chart", b =>
+                {
+                    b.Property<Guid>("ChartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Settings")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChartId");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Chart_Name");
+
+                    b.ToTable("Charts");
                 });
 
             modelBuilder.Entity("WEB.Models.Component", b =>
@@ -449,7 +473,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Component_Code");
 
-                    b.ToTable("Components", (string)null);
+                    b.ToTable("Components");
                 });
 
             modelBuilder.Entity("WEB.Models.ComponentIndicator", b =>
@@ -465,7 +489,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("IndicatorId");
 
-                    b.ToTable("ComponentIndicators", (string)null);
+                    b.ToTable("ComponentIndicators");
                 });
 
             modelBuilder.Entity("WEB.Models.DataReview", b =>
@@ -493,7 +517,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DataReviews", (string)null);
+                    b.ToTable("DataReviews");
                 });
 
             modelBuilder.Entity("WEB.Models.DataReviewLink", b =>
@@ -515,7 +539,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("DataReviewId");
 
-                    b.ToTable("DataReviewLinks", (string)null);
+                    b.ToTable("DataReviewLinks");
                 });
 
             modelBuilder.Entity("WEB.Models.Date", b =>
@@ -566,7 +590,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("YearId");
 
-                    b.ToTable("Dates", (string)null);
+                    b.ToTable("Dates");
                 });
 
             modelBuilder.Entity("WEB.Models.Datum", b =>
@@ -645,7 +669,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("VerifyDataReviewId");
 
-                    b.ToTable("Data", (string)null);
+                    b.ToTable("Data");
                 });
 
             modelBuilder.Entity("WEB.Models.Document", b =>
@@ -680,7 +704,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("WEB.Models.DocumentContent", b =>
@@ -743,7 +767,7 @@ namespace WEB.Migrations
                         .HasDatabaseName("IX_Entity_ShortName")
                         .HasFilter("[OrganisationId] IS NOT NULL");
 
-                    b.ToTable("Entities", (string)null);
+                    b.ToTable("Entities");
                 });
 
             modelBuilder.Entity("WEB.Models.EntityLink", b =>
@@ -759,7 +783,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("ParentEntityId");
 
-                    b.ToTable("EntityLinks", (string)null);
+                    b.ToTable("EntityLinks");
                 });
 
             modelBuilder.Entity("WEB.Models.EntityPermission", b =>
@@ -780,7 +804,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EntityPermissions", (string)null);
+                    b.ToTable("EntityPermissions");
                 });
 
             modelBuilder.Entity("WEB.Models.EntityType", b =>
@@ -812,7 +836,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_EntityType_Plural");
 
-                    b.ToTable("EntityTypes", (string)null);
+                    b.ToTable("EntityTypes");
                 });
 
             modelBuilder.Entity("WEB.Models.Error", b =>
@@ -848,7 +872,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("ExceptionId");
 
-                    b.ToTable("Errors", (string)null);
+                    b.ToTable("Errors");
                 });
 
             modelBuilder.Entity("WEB.Models.ErrorException", b =>
@@ -870,7 +894,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("InnerExceptionId");
 
-                    b.ToTable("Exceptions", (string)null);
+                    b.ToTable("Exceptions");
                 });
 
             modelBuilder.Entity("WEB.Models.Field", b =>
@@ -878,6 +902,9 @@ namespace WEB.Migrations
                     b.Property<Guid>("FieldId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Category")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Component")
                         .HasColumnType("bit");
@@ -917,6 +944,9 @@ namespace WEB.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<Guid?>("OptionListId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Organisation")
                         .HasColumnType("bit");
 
@@ -942,6 +972,9 @@ namespace WEB.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Subcategory")
+                        .HasColumnType("bit");
+
                     b.HasKey("FieldId");
 
                     b.HasIndex("GroupId");
@@ -950,26 +983,9 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Field_Name");
 
-                    b.ToTable("Fields", (string)null);
-                });
+                    b.HasIndex("OptionListId");
 
-            modelBuilder.Entity("WEB.Models.FieldValue", b =>
-                {
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FieldId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ItemId", "FieldId")
-                        .HasName("PK_FieldValue");
-
-                    b.HasIndex("FieldId");
-
-                    b.ToTable("FieldValues", (string)null);
+                    b.ToTable("Fields");
                 });
 
             modelBuilder.Entity("WEB.Models.Folder", b =>
@@ -998,7 +1014,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("ParentFolderId");
 
-                    b.ToTable("Folders", (string)null);
+                    b.ToTable("Folders");
                 });
 
             modelBuilder.Entity("WEB.Models.FolderContent", b =>
@@ -1033,7 +1049,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_FolderContent_Name");
 
-                    b.ToTable("FolderContents", (string)null);
+                    b.ToTable("FolderContents");
                 });
 
             modelBuilder.Entity("WEB.Models.Group", b =>
@@ -1056,7 +1072,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Group_Name");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("WEB.Models.Indicator", b =>
@@ -1069,6 +1085,10 @@ namespace WEB.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<Guid>("CreatedById")
                         .HasColumnType("uniqueidentifier");
@@ -1094,11 +1114,18 @@ namespace WEB.Migrations
                     b.Property<int>("Frequency")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("GroupingIndicatorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("IndicatorStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("IndicatorType")
                         .HasColumnType("int");
+
+                    b.Property<string>("Label")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("LastSavedById")
                         .HasColumnType("uniqueidentifier");
@@ -1106,10 +1133,27 @@ namespace WEB.Migrations
                     b.Property<DateTime>("LastSavedDateUtc")
                         .HasColumnType("smalldatetime");
 
+                    b.Property<bool>("LowerIsBetter")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("Maximum")
+                        .HasColumnType("decimal(20, 8)");
+
+                    b.Property<decimal?>("Minimum")
+                        .HasColumnType("decimal(20, 8)");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("OptionListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<bool>("RequiresApprove")
                         .HasColumnType("bit");
@@ -1120,16 +1164,28 @@ namespace WEB.Migrations
                     b.Property<bool>("RequiresVerify")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ShortName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<Guid>("SubcategoryId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Suffix")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("Units")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("UseIndicatorDates")
+                        .HasColumnType("bit");
 
                     b.HasKey("IndicatorId");
 
@@ -1141,13 +1197,33 @@ namespace WEB.Migrations
 
                     b.HasIndex("EntityTypeId");
 
+                    b.HasIndex("GroupingIndicatorId");
+
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasDatabaseName("IX_Indicator_Name");
 
+                    b.HasIndex("OptionListId");
+
                     b.HasIndex("SubcategoryId");
 
-                    b.ToTable("Indicators", (string)null);
+                    b.ToTable("Indicators");
+                });
+
+            modelBuilder.Entity("WEB.Models.IndicatorDate", b =>
+                {
+                    b.Property<Guid>("IndicatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("IndicatorId", "DateId")
+                        .HasName("PK_IndicatorDate");
+
+                    b.HasIndex("DateId");
+
+                    b.ToTable("IndicatorDates");
                 });
 
             modelBuilder.Entity("WEB.Models.IndicatorPermission", b =>
@@ -1180,7 +1256,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("IndicatorPermissions", (string)null);
+                    b.ToTable("IndicatorPermissions");
                 });
 
             modelBuilder.Entity("WEB.Models.Item", b =>
@@ -1195,7 +1271,47 @@ namespace WEB.Migrations
 
                     b.HasKey("ItemId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("WEB.Models.ItemField", b =>
+                {
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ItemId", "FieldId")
+                        .HasName("PK_ItemField");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("ItemFields");
+                });
+
+            modelBuilder.Entity("WEB.Models.ItemOption", b =>
+                {
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ItemId", "FieldId", "OptionId")
+                        .HasName("PK_ItemOption");
+
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("OptionId");
+
+                    b.ToTable("ItemOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrame", b =>
@@ -1215,7 +1331,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_LogFrame_Name");
 
-                    b.ToTable("LogFrames", (string)null);
+                    b.ToTable("LogFrames");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrameRow", b =>
@@ -1253,7 +1369,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("LogFrameId");
 
-                    b.ToTable("LogFrameRows", (string)null);
+                    b.ToTable("LogFrameRows");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrameRowComponent", b =>
@@ -1269,7 +1385,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("ComponentId");
 
-                    b.ToTable("LogFrameRowComponents", (string)null);
+                    b.ToTable("LogFrameRowComponents");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrameRowIndicator", b =>
@@ -1285,7 +1401,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("IndicatorId");
 
-                    b.ToTable("LogFrameRowIndicators", (string)null);
+                    b.ToTable("LogFrameRowIndicators");
                 });
 
             modelBuilder.Entity("WEB.Models.Milestone", b =>
@@ -1318,7 +1434,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Milestone_Name");
 
-                    b.ToTable("Milestones", (string)null);
+                    b.ToTable("Milestones");
                 });
 
             modelBuilder.Entity("WEB.Models.Option", b =>
@@ -1327,40 +1443,55 @@ namespace WEB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FieldId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<Guid>("OptionListId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
+                    b.Property<short?>("Value")
+                        .HasColumnType("smallint");
+
                     b.HasKey("OptionId");
 
-                    b.HasIndex("FieldId", "Name")
+                    b.HasIndex("OptionListId", "Name")
                         .IsUnique()
                         .HasDatabaseName("IX_Option_Name");
 
-                    b.ToTable("Options", (string)null);
+                    b.ToTable("Options");
                 });
 
-            modelBuilder.Entity("WEB.Models.OptionValue", b =>
+            modelBuilder.Entity("WEB.Models.OptionList", b =>
                 {
-                    b.Property<Guid>("ItemId")
+                    b.Property<Guid>("OptionListId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OptionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
-                    b.HasKey("ItemId", "OptionId")
-                        .HasName("PK_OptionValue");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasIndex("OptionId");
+                    b.HasKey("OptionListId");
 
-                    b.ToTable("OptionValues", (string)null);
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_OptionList_Name");
+
+                    b.ToTable("OptionLists");
                 });
 
             modelBuilder.Entity("WEB.Models.Organisation", b =>
@@ -1389,7 +1520,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Organisation_Name");
 
-                    b.ToTable("Organisations", (string)null);
+                    b.ToTable("Organisations");
                 });
 
             modelBuilder.Entity("WEB.Models.Project", b =>
@@ -1413,7 +1544,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Project_Name");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("WEB.Models.Question", b =>
@@ -1474,7 +1605,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Question_Code");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("WEB.Models.QuestionOption", b =>
@@ -1505,7 +1636,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("QuestionOptionGroupId");
 
-                    b.ToTable("QuestionOptions", (string)null);
+                    b.ToTable("QuestionOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.QuestionOptionGroup", b =>
@@ -1528,7 +1659,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_QuestionOptionGroup_Name");
 
-                    b.ToTable("QuestionOptionGroups", (string)null);
+                    b.ToTable("QuestionOptionGroups");
                 });
 
             modelBuilder.Entity("WEB.Models.QuestionSummary", b =>
@@ -1547,7 +1678,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("DateId");
 
-                    b.ToTable("QuestionSummaries", (string)null);
+                    b.ToTable("QuestionSummaries");
                 });
 
             modelBuilder.Entity("WEB.Models.Questionnaire", b =>
@@ -1574,6 +1705,9 @@ namespace WEB.Migrations
 
                     b.Property<Guid?>("DefaultDateId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("DisableEntry")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("DisplayQuestionCode")
                         .HasColumnType("bit");
@@ -1609,7 +1743,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Questionnaire_Name");
 
-                    b.ToTable("Questionnaires", (string)null);
+                    b.ToTable("Questionnaires");
                 });
 
             modelBuilder.Entity("WEB.Models.Relationship", b =>
@@ -1639,7 +1773,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("TheoryOfChangeId");
 
-                    b.ToTable("Relationships", (string)null);
+                    b.ToTable("Relationships");
                 });
 
             modelBuilder.Entity("WEB.Models.Response", b =>
@@ -1703,7 +1837,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("SubmittedById");
 
-                    b.ToTable("Responses", (string)null);
+                    b.ToTable("Responses");
                 });
 
             modelBuilder.Entity("WEB.Models.Role", b =>
@@ -1760,7 +1894,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Section_Name");
 
-                    b.ToTable("Sections", (string)null);
+                    b.ToTable("Sections");
                 });
 
             modelBuilder.Entity("WEB.Models.Settings", b =>
@@ -1793,7 +1927,7 @@ namespace WEB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Settings", (string)null);
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("WEB.Models.SkipLogicOption", b =>
@@ -1809,7 +1943,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("CheckQuestionOptionId");
 
-                    b.ToTable("SkipLogicOptions", (string)null);
+                    b.ToTable("SkipLogicOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.Subcategory", b =>
@@ -1847,7 +1981,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Subcategory_Name");
 
-                    b.ToTable("Subcategories", (string)null);
+                    b.ToTable("Subcategories");
                 });
 
             modelBuilder.Entity("WEB.Models.Task", b =>
@@ -1889,7 +2023,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Task_Name");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("WEB.Models.TheoryOfChange", b =>
@@ -1909,7 +2043,7 @@ namespace WEB.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_TheoryOfChange_Name");
 
-                    b.ToTable("TheoriesOfChange", (string)null);
+                    b.ToTable("TheoriesOfChange");
                 });
 
             modelBuilder.Entity("WEB.Models.TheoryOfChangeComponent", b =>
@@ -1925,7 +2059,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("ComponentId");
 
-                    b.ToTable("TheoryOfChangeComponents", (string)null);
+                    b.ToTable("TheoryOfChangeComponents");
                 });
 
             modelBuilder.Entity("WEB.Models.Token", b =>
@@ -1959,7 +2093,7 @@ namespace WEB.Migrations
 
                     b.HasIndex("SourceIndicatorId");
 
-                    b.ToTable("Tokens", (string)null);
+                    b.ToTable("Tokens");
                 });
 
             modelBuilder.Entity("WEB.Models.User", b =>
@@ -2422,26 +2556,14 @@ namespace WEB.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("WEB.Models.OptionList", "OptionList")
+                        .WithMany("Fields")
+                        .HasForeignKey("OptionListId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Group");
-                });
 
-            modelBuilder.Entity("WEB.Models.FieldValue", b =>
-                {
-                    b.HasOne("WEB.Models.Field", "Field")
-                        .WithMany("FieldValues")
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WEB.Models.Item", "Item")
-                        .WithMany("FieldValues")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Field");
-
-                    b.Navigation("Item");
+                    b.Navigation("OptionList");
                 });
 
             modelBuilder.Entity("WEB.Models.Folder", b =>
@@ -2487,6 +2609,16 @@ namespace WEB.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("WEB.Models.Indicator", "GroupingIndicator")
+                        .WithMany("GroupIndicators")
+                        .HasForeignKey("GroupingIndicatorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WEB.Models.OptionList", "OptionList")
+                        .WithMany("Indicators")
+                        .HasForeignKey("OptionListId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("WEB.Models.Subcategory", "Subcategory")
                         .WithMany("Indicators")
                         .HasForeignKey("SubcategoryId")
@@ -2497,7 +2629,30 @@ namespace WEB.Migrations
 
                     b.Navigation("EntityType");
 
+                    b.Navigation("GroupingIndicator");
+
+                    b.Navigation("OptionList");
+
                     b.Navigation("Subcategory");
+                });
+
+            modelBuilder.Entity("WEB.Models.IndicatorDate", b =>
+                {
+                    b.HasOne("WEB.Models.Date", "Date")
+                        .WithMany("IndicatorDates")
+                        .HasForeignKey("DateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WEB.Models.Indicator", "Indicator")
+                        .WithMany("IndicatorDates")
+                        .HasForeignKey("IndicatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Date");
+
+                    b.Navigation("Indicator");
                 });
 
             modelBuilder.Entity("WEB.Models.IndicatorPermission", b =>
@@ -2516,6 +2671,52 @@ namespace WEB.Migrations
                     b.Navigation("Indicator");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WEB.Models.ItemField", b =>
+                {
+                    b.HasOne("WEB.Models.Field", "Field")
+                        .WithMany("ItemFields")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WEB.Models.Item", "Item")
+                        .WithMany("ItemFields")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Field");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("WEB.Models.ItemOption", b =>
+                {
+                    b.HasOne("WEB.Models.Field", "Field")
+                        .WithMany("ItemOptions")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WEB.Models.Item", "Item")
+                        .WithMany("ItemOptions")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WEB.Models.Option", "Option")
+                        .WithMany("ItemOptions")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Field");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrameRow", b =>
@@ -2580,32 +2781,13 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("WEB.Models.Option", b =>
                 {
-                    b.HasOne("WEB.Models.Field", "Field")
+                    b.HasOne("WEB.Models.OptionList", "OptionList")
                         .WithMany("Options")
-                        .HasForeignKey("FieldId")
+                        .HasForeignKey("OptionListId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Field");
-                });
-
-            modelBuilder.Entity("WEB.Models.OptionValue", b =>
-                {
-                    b.HasOne("WEB.Models.Item", "Item")
-                        .WithMany("OptionValues")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WEB.Models.Option", "Option")
-                        .WithMany("OptionValues")
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("Option");
+                    b.Navigation("OptionList");
                 });
 
             modelBuilder.Entity("WEB.Models.Question", b =>
@@ -2906,6 +3088,8 @@ namespace WEB.Migrations
 
                     b.Navigation("DefaultDateQuestionnaires");
 
+                    b.Navigation("IndicatorDates");
+
                     b.Navigation("QuestionSummaries");
 
                     b.Navigation("Responses");
@@ -2948,9 +3132,9 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("WEB.Models.Field", b =>
                 {
-                    b.Navigation("FieldValues");
+                    b.Navigation("ItemFields");
 
-                    b.Navigation("Options");
+                    b.Navigation("ItemOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.Folder", b =>
@@ -2971,6 +3155,10 @@ namespace WEB.Migrations
 
                     b.Navigation("Data");
 
+                    b.Navigation("GroupIndicators");
+
+                    b.Navigation("IndicatorDates");
+
                     b.Navigation("IndicatorPermissions");
 
                     b.Navigation("LogFrameRowIndicators");
@@ -2984,9 +3172,9 @@ namespace WEB.Migrations
                 {
                     b.Navigation("Documents");
 
-                    b.Navigation("FieldValues");
+                    b.Navigation("ItemFields");
 
-                    b.Navigation("OptionValues");
+                    b.Navigation("ItemOptions");
                 });
 
             modelBuilder.Entity("WEB.Models.LogFrame", b =>
@@ -3008,7 +3196,16 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("WEB.Models.Option", b =>
                 {
-                    b.Navigation("OptionValues");
+                    b.Navigation("ItemOptions");
+                });
+
+            modelBuilder.Entity("WEB.Models.OptionList", b =>
+                {
+                    b.Navigation("Fields");
+
+                    b.Navigation("Indicators");
+
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("WEB.Models.Organisation", b =>

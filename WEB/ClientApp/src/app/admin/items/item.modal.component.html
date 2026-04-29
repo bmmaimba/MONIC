@@ -6,14 +6,14 @@
     </div>
     
     <div class="modal-body p-5" [ngClass]="{ 'mb-6': !showFooter }">
-
+        
         <form (submit)="runSearch()" novalidate>
 
             <fieldset>
 
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && itemType!=undefined">Filtered by item type: {{itemType.label}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.itemType=undefined;itemType=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -22,9 +22,11 @@
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!itemType">
-                        <select id="itemType" name="itemType" [(ngModel)]="searchOptions.itemType" #itemType="ngModel" class="form-select">
-                            <option *ngFor="let itemType of itemTypes" [ngValue]="itemType.value">{{ itemType.label }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="itemType" name="itemType" [(ngModel)]="searchOptions.itemType" #itemType="ngModel" class="form-select">
+                                <option *ngFor="let itemType of itemTypes" [ngValue]="itemType.value">{{ itemType.label }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4">

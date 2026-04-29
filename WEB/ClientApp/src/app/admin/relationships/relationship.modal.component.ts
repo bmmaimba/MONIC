@@ -10,12 +10,12 @@ import { Component } from '../../common/models/component.model';
 
 @NgComponent({
     selector: 'relationship-modal',
-    templateUrl: './relationship.modal.component.html'
+    templateUrl: './relationship.modal.component.html',
+    standalone: false
 })
 export class RelationshipModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Relationship[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: RelationshipSearchOptions = new RelationshipSearchOptions();
     public relationships: Relationship[];
@@ -24,6 +24,7 @@ export class RelationshipModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Relationship> = new EventEmitter<Relationship>();
     @Output() changes: EventEmitter<Relationship[]> = new EventEmitter<Relationship[]>();
+    @Input() selectedItems: Relationship[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

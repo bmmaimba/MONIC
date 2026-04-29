@@ -12,7 +12,8 @@ import { Enum } from '../../common/models/enums.model';
         useExisting: forwardRef(() => ComponentSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class ComponentSelectComponent implements OnInit, ControlValueAccessor {
 

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ProfileModel } from '../common/models/profile.models';
 import { AuthService } from '../common/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ErrorService } from '../common/services/error.service';
 import { NgForm } from '@angular/forms';
 import { DataEntryFormResponse, FormsService } from '../common/services/forms.service';
@@ -11,29 +11,32 @@ import { DateService } from '../common/services/date.service';
 import { EntityService } from '../common/services/entity.service';
 import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { Entity, EntitySearchOptions } from '../common/models/entity.model';
-import { Date as myDate, DateSearchOptions } from '../common/models/date.model';
+import { DateSearchOptions, AppDate as myDate } from '../common/models/date.model';
 import { catchError, share } from 'rxjs/operators';
-import { PendingRequestsInterceptor } from 'ng-http-loader';
+import { PendingRequestsInterceptorConfigurer } from 'ng-http-loader';
 import { Organisation } from '../common/models/organisation.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Indicator } from '../common/models/indicator.model';
 import { Enums, PermissionTypes, ReviewResults, ReviewStatuses, Roles } from '../common/models/enums.model';
 import { CategoryRow, IndicatorRow, IndicatorRowState, SubcategoryRow } from '../common/models/dataentry.model';
-import { NgbAccordion, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatumStatusModalComponent } from './datumstatus.modal.component';
 import { DataReviewModalComponent } from './datareview.modal';
-import { environment } from '../../environments/environment';
 import { AppSettings } from '../common/models/appsettings.model';
 import { AppService } from '../common/services/app.service';
+import { Option } from '../common/models/option.model';
+import { AppSettingsService } from '../common/services/appsettings.service';
 
 @Component({
     selector: 'dataentry',
     templateUrl: './dataentry.component.html',
-    styleUrls: ['./dataentry.component.css']
+    styleUrls: ['./dataentry.component.css'],
+    standalone: false
 })
 export class DataEntryComponent implements OnInit, AfterViewInit {
 
     public options = { entityId: null as string, entity: null as Entity, dateId: null as string, date: null as myDate, permissionType: PermissionTypes.Edit };
+    public optionsMap: { [key: string]: Option[]; } = {};
     public loaded = false;
     public profile: ProfileModel;
     public categoryRows: CategoryRow[] = [];
@@ -55,7 +58,7 @@ export class DataEntryComponent implements OnInit, AfterViewInit {
     private appSettings: AppSettings;
 
     @ViewChild("optionsForm") form: NgForm;
-    @ViewChild("accordion") accordion: NgbAccordion;
+    @ViewChild("accordion") accordion: any;
 
     constructor(
         private authService: AuthService,
@@ -66,8 +69,9 @@ export class DataEntryComponent implements OnInit, AfterViewInit {
         private dateService: DateService,
         private entityService: EntityService,
         private route: ActivatedRoute,
-        pendingRequestsInterceptor: PendingRequestsInterceptor,
-        private modalService: NgbModal
+        pendingRequestsInterceptor: PendingRequestsInterceptorConfigurer,
+        private modalService: NgbModal,
+        private appSettingsService: AppSettingsService
     ) {
         // disabled this otherwise the route is nuked each time and (eg) the nav controller initialises again
         //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -83,61 +87,49 @@ export class DataEntryComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
 
         // permissions independent of indicators
-        this.authService.canEdit().subscribe(canEdit => this.canEdit = canEdit);
-        this.authService.canSubmit().subscribe(canSubmit => this.canSubmit = canSubmit);
-        this.authService.canVerify().subscribe(canVerify => this.canVerify = canVerify);
-        this.authService.canApprove().subscribe(canApprove => this.canApprove = canApprove);
+        this.canEdit = this.authService.canEdit();
+        this.canSubmit = this.authService.canSubmit();
+        this.canSubmit = this.authService.canVerify();
+        this.canApprove = this.authService.canApprove();
+        this.canEdit = this.authService.canEdit();
 
-        this.appService.getAppSettings().subscribe(appSettings => this.appSettings = appSettings);
+        this.appSettings = this.appSettingsService.appSettings;
 
-        this.authService.getProfile()
-            .subscribe(
-                profile => {
-                    this.profile = profile;
-                    this.organisation = profile.organisation;
+        this.profile = this.authService.profile;
+        this.organisation = this.profile.organisation;
 
-                    // the form defaults to edit, if the user doesn't have the ability, switch to view
-                    if (!this.canEdit) this.options.permissionType = PermissionTypes.View;
+        // the form defaults to edit, if the user doesn't have the ability, switch to view
+        if (!this.canEdit) this.options.permissionType = PermissionTypes.View;
 
-                })
 
-        this.authService.isInRole$(Roles.Administrator)
-            .subscribe({
-                next: result => {
-                    if (result) {
-                        // todo: remove these? legacy from RURA?
-                        this.canReject = true;
-                        this.organisation = undefined;
-                        this.isOpen = null;
-                        this.hasOpened = true;
-                    } else {
 
-                        this.authService.isInRole$(Roles.Oversight)
-                            .subscribe({
-                                next: result => {
-                                    if (result) {
-                                        this.isOpen = null;
-                                        this.hasOpened = true;
-                                    }
-                                }
-                            });
+        if (this.authService.isInRole(Roles.Administrator)) {
+            // todo: remove these? legacy from RURA?
+            this.canReject = true;
+            this.organisation = undefined;
+            this.isOpen = null;
+            this.hasOpened = true;
+        } else {
 
-                    }
-                }
-            });
+            if (this.authService.isInRole(Roles.Oversight)) {
+                this.isOpen = null;
+                this.hasOpened = true;
+            }
+
+        }
 
         // ****************** temp for development
         //if (window.location.hostname === "localhost") {
         //    forkJoin({
         //        dates: this.dateService.search({ pageSize: 1, isOpen: true } as DateSearchOptions),
-        //        entities: this.entityService.search({ pageSize: 1, role: Roles.Administrator, q: 'uganda' } as EntitySearchOptions)
+        //        entities: this.entityService.search({ pageSize: 1, role: Roles.Administrator } as EntitySearchOptions)
         //    }).subscribe({
         //        next: response => {
         //            this.options.date = response.dates.dates[0];
         //            this.options.dateId = response.dates.dates[0].dateId;
         //            this.options.entity = response.entities.entities[0];
         //            this.options.entityId = this.options.entity.entityId;
-        //            this.options.permissionType = PermissionTypes.Approve;
+        //            this.options.permissionType = PermissionTypes.Edit;
         //            setTimeout(() => this.load(this.form));
         //        },
         //        error: () => this.toastr.error("Failed to load some of the test data")
@@ -200,6 +192,7 @@ export class DataEntryComponent implements OnInit, AfterViewInit {
                 next: data => {
 
                     this.categoryRows = [];
+                    this.optionsMap = data.optionsMap;
                     this.setForm(data);
                     this.loaded = true;
 

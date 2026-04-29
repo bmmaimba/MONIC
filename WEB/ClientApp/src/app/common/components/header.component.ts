@@ -9,7 +9,8 @@ import { ProfileModel } from '../models/profile.models';
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    styleUrls: ['./header.component.css']
+    styleUrls: ['./header.component.css'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit {
 
@@ -31,7 +32,7 @@ export class HeaderComponent implements OnInit {
         private router: Router,
         private authService: AuthService
     ) {
-        this.authService.getProfile().subscribe(profile => this.profile = profile);
+        this.profile = this.authService.profile;
     }
 
     ngOnInit(): void {        

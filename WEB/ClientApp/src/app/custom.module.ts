@@ -7,7 +7,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from './shared.module';
 import { StrongPasswordModule } from './common/zxcvbn/strong-password.module';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { HomeComponent } from './home/home.component';
 import { AccountComponent } from './account/account.component';
 import { ErrorsComponent } from './error/errors.component';
@@ -32,12 +31,11 @@ import { QuestionnairesComponent } from './questionnaire/questionnaires.componen
 import { DatumStatusModalComponent } from './forms/datumstatus.modal.component';
 import { AddIndicatorsPermissionModal } from './admin/users/addindicatorpermissions.modal';
 import { DataReviewModalComponent } from './forms/datareview.modal';
-import { NgxEchartsModule } from 'ngx-echarts';
 import { IndicatorLineChartComponent } from './common/widgets/indicator.linechart.component';
 import { IndicatorBarChartComponent } from './common/widgets/indicator.barchart.component';
 import { IndicatorMapComponent } from './common/widgets/indicator.map.component';
 import { IndicatorPieChartComponent } from './common/widgets/indicator.piechart.component';
-import { ToolsComponent } from './tools/tools.component';
+import { ToolsComponent } from './admin/tools/tools.component';
 import { IndicatorMapSettingsComponent } from './common/widgets/indicator.map.settings.component';
 import { WidgetComponent } from './common/widgets/widget.component';
 import { IndicatorLineChartSettingsComponent } from './common/widgets/indicator.linechart.settings.component';
@@ -51,6 +49,10 @@ import { FolderComponent } from './folder/folder.component';
 import { FolderViewComponent } from './common/components/folderview.component';
 import { FolderShortcutComponent } from './common/widgets/folder.shortcut.component';
 import { FolderShortcutSettingsComponent } from './common/widgets/folder.shortcut.settings.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { ChartComponent } from './charts/chart.component';
+import { ChartsComponent } from './charts/charts.component';
+import { SerieComponent } from './charts/serie.component';
 
 @NgModule({
     imports: [
@@ -62,10 +64,7 @@ import { FolderShortcutSettingsComponent } from './common/widgets/folder.shortcu
         SharedModule,
         StrongPasswordModule,
         NgxGraphModule,
-        NgxChartsModule,
-        NgxEchartsModule.forRoot({
-            echarts: () => import('echarts')
-        }),
+        NgxEchartsModule,
         GoogleMapsModule
     ],
     declarations: [
@@ -108,7 +107,10 @@ import { FolderShortcutSettingsComponent } from './common/widgets/folder.shortcu
         FolderComponent,
         FolderViewComponent,
         FolderShortcutComponent,
-        FolderShortcutSettingsComponent
+        FolderShortcutSettingsComponent,
+        ChartsComponent,
+        ChartComponent,
+        SerieComponent
     ],
     exports: [
         GanttComponent,

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WEB.Models
 {
-    public class SubcategoryDTO
+    public class SubcategoryDTO : FieldsDTO
     {
         [Required]
         public Guid SubcategoryId { get; set; }
@@ -11,11 +11,11 @@ namespace WEB.Models
         [Required]
         public Guid CategoryId { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false), MaxLength(15)]
-        public string Code { get; set; }
-
         [DisplayFormat(ConvertEmptyStringToNull = false), MaxLength(100)]
         public string Name { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false), MaxLength(15)]
+        public string Code { get; set; }
 
         [Required]
         public bool DataEntrySubtotal { get; set; }
@@ -31,7 +31,7 @@ namespace WEB.Models
 
     public static partial class ModelFactory
     {
-        public static SubcategoryDTO Create(Subcategory subcategory, bool includeParents = true, bool includeChildren = false)
+        public static SubcategoryDTO Create(Subcategory subcategory, bool includeParents = true, bool includeChildren = false, Item item = null)
         {
             if (subcategory == null) return null;
 
@@ -39,8 +39,8 @@ namespace WEB.Models
 
             subcategoryDTO.SubcategoryId = subcategory.SubcategoryId;
             subcategoryDTO.CategoryId = subcategory.CategoryId;
-            subcategoryDTO.Code = subcategory.Code;
             subcategoryDTO.Name = subcategory.Name;
+            subcategoryDTO.Code = subcategory.Code;
             subcategoryDTO.DataEntrySubtotal = subcategory.DataEntrySubtotal;
             subcategoryDTO.SortOrder = subcategory.SortOrder;
 
@@ -55,14 +55,16 @@ namespace WEB.Models
                     subcategoryDTO.Indicators.Add(Create(indicator));
             }
 
+            subcategoryDTO.AddFields(item);
+
             return subcategoryDTO;
         }
 
         public static void Hydrate(Subcategory subcategory, SubcategoryDTO subcategoryDTO)
         {
             subcategory.CategoryId = subcategoryDTO.CategoryId;
-            subcategory.Code = subcategoryDTO.Code;
             subcategory.Name = subcategoryDTO.Name;
+            subcategory.Code = subcategoryDTO.Code;
             subcategory.DataEntrySubtotal = subcategoryDTO.DataEntrySubtotal;
             subcategory.SortOrder = subcategoryDTO.SortOrder;
         }

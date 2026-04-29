@@ -1,11 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { LOCALE_ID, NgModule } from '@angular/core';
-import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { AppRoutes } from './app.routes';
-import { NgHttpLoaderModule } from 'ng-http-loader';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModule, NgbDateAdapter, NgbDateNativeAdapter, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -15,15 +14,25 @@ import { AccessGuard } from './common/auth/auth.accessguard';
 import { AuthoriseRequestInterceptor, UnauthorisedResponseInterceptor } from './common/auth/auth.interceptors';
 import { SharedModule } from './shared.module';
 import { JsonDateInterceptor } from './common/interceptors/jsondate.interceptor';
-import { QuillModule } from 'ngx-quill';
+import { NgHttpLoaderComponent, pendingRequestsInterceptor$ } from 'ng-http-loader';
 import { CurrencyPipe, DecimalPipe, PercentPipe } from '@angular/common';
+import { AuthService } from './common/services/auth.service';
+import { firstValueFrom } from 'rxjs';
+import { NgxEchartsModule } from 'ngx-echarts';
+
+export function initApp(auth: AuthService) {
+    return () => firstValueFrom(auth.initialize());
+}
 
 @NgModule({
+    declarations: [
+        AppComponent,
+        NotFoundComponent
+    ],
+    bootstrap: [AppComponent],
     imports: [
-        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-        HttpClientModule,
-        HttpClientJsonpModule,
-        RouterModule.forRoot(AppRoutes, { /*enableTracing:true*/ }),
+        BrowserModule,
+        RouterModule.forRoot(AppRoutes, { anchorScrolling: 'enabled' }),
         ToastrModule.forRoot({
             closeButton: true,
             positionClass: "toast-bottom-right",
@@ -32,30 +41,36 @@ import { CurrencyPipe, DecimalPipe, PercentPipe } from '@angular/common';
             progressBar: true,
             preventDuplicates: true
         }),
-        NgHttpLoaderModule.forRoot(),
-        QuillModule.forRoot(),
+        NgxEchartsModule.forRoot({
+            echarts: () => import('echarts')
+        }),
         BrowserAnimationsModule,
+        NgHttpLoaderComponent,
         FormsModule,
         NgbModule,
         SharedModule
     ],
-    declarations: [
-        AppComponent,
-        NotFoundComponent
-    ],
     providers: [
+        { provide: APP_INITIALIZER, useFactory: initApp, deps: [AuthService], multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: AuthoriseRequestInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: UnauthorisedResponseInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JsonDateInterceptor, multi: true },
         { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter },
         AccessGuard,
         ErrorService,
-        NgbTooltipConfig,
         PercentPipe,
         DecimalPipe,
         CurrencyPipe,
-        { provide: LOCALE_ID, useValue: 'en-ZA' }
-    ],
-    bootstrap: [AppComponent]
+        { provide: LOCALE_ID, useValue: 'en-ZA' },
+        provideHttpClient(withInterceptorsFromDi(), withJsonpSupport(), withInterceptors([pendingRequestsInterceptor$])),
+        {
+            provide: NgbTooltipConfig,
+            useFactory: () => {
+                const config = new NgbTooltipConfig();
+                config.container = 'body';
+                return config;
+            }
+        }
+    ]
 })
 export class AppModule { }

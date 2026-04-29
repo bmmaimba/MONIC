@@ -13,10 +13,12 @@ import { ConfirmModalComponent, ConfirmModalOptions } from '../common/components
 import { Relationship } from '../common/models/relationship.model';
 import { RelationshipService } from '../common/services/relationship.service';
 import { Component } from '../common/models/component.model';
+import { FieldValueMapperService } from '../common/services/field-value-mapper.service';
 
 @NgComponent({
     selector: 'theoryofchangerelationship-modal',
-    templateUrl: './theoryofchangerelationship.modal.html'
+    templateUrl: './theoryofchangerelationship.modal.html',
+    standalone: false
 })
 export class TheoryOfChangeRelationshipModal extends ItemComponent implements OnInit {
 
@@ -32,9 +34,10 @@ export class TheoryOfChangeRelationshipModal extends ItemComponent implements On
         protected modalService: NgbModal,
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
-        protected documentService: DocumentService
+        protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {
@@ -49,8 +52,8 @@ export class TheoryOfChangeRelationshipModal extends ItemComponent implements On
             this.relationship.sourceComponentId = sourceComponent.componentId;
             this.relationship.targetComponent = targetComponent;
             this.relationship.targetComponentId = targetComponent.componentId;
-            this.relationship.fieldValues = [];
-            this.relationship.optionValues = [];
+            this.relationship.itemFields = [];
+            this.relationship.itemOptions = [];
         } else {
             this.isNew = false;
             // clone to avoid cancelled changes affecting source page

@@ -11,18 +11,23 @@ namespace WEB.Models
         public Guid OptionId { get; set; }
 
         [Required]
-        public Guid FieldId { get; set; }
+        public Guid OptionListId { get; set; }
 
         [Required(AllowEmptyStrings = true), MaxLength(2000)]
         public string Name { get; set; }
 
+        public short? Value { get; set; }
+
+        [MaxLength(7)]
+        public string Color { get; set; }
+
         [Required]
         public int SortOrder { get; set; }
 
-        public virtual ICollection<OptionValue> OptionValues { get; set; } = new List<OptionValue>();
+        public virtual ICollection<ItemOption> ItemOptions { get; set; } = new List<ItemOption>();
 
-        [ForeignKey("FieldId")]
-        public virtual Field Field { get; set; }
+        [ForeignKey("OptionListId")]
+        public virtual OptionList OptionList { get; set; }
 
         public Option()
         {

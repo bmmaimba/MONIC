@@ -6,13 +6,14 @@ import { DatumSearchOptions, DatumSearchResponse, Datum } from '../../common/mod
 import { FadeThenShrink } from '../../common/animations/fadethenshrink';
 import { ErrorService } from '../../common/services/error.service';
 import { DatumService } from '../../common/services/datum.service';
-import { AppService } from '../../common/services/app.service';
+import { AppSettingsService } from '../../common/services/appsettings.service';
 import { AppSettings } from '../../common/models/appsettings.model';
 
 @NgComponent({
     selector: 'datum-list',
     templateUrl: './datum.list.component.html',
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class DatumListComponent implements OnInit, OnDestroy {
 
@@ -28,7 +29,7 @@ export class DatumListComponent implements OnInit, OnDestroy {
         private router: Router,
         private errorService: ErrorService,
         private datumService: DatumService,
-        private appService: AppService
+        private appSettingsService: AppSettingsService
     ) {
     }
 
@@ -39,7 +40,7 @@ export class DatumListComponent implements OnInit, OnDestroy {
                 this.runSearch();
             }
         });
-        this.appService.getAppSettings().subscribe(appSettings => this.appSettings = appSettings);
+        this.appSettings = this.appSettingsService.appSettings;
         this.runSearch();
     }
 

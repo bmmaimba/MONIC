@@ -5,13 +5,15 @@ import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from './shared.module';
-import { GeneratedRoutes } from './generated.routes';
+import { AdminRoutes } from './generated.routes';
 import { AnswerListComponent } from './admin/answers/answer.list.component';
 import { AnswerEditComponent } from './admin/answers/answer.edit.component';
 import { AnswerOptionListComponent } from './admin/answeroptions/answeroption.list.component';
 import { AnswerOptionEditComponent } from './admin/answeroptions/answeroption.edit.component';
 import { CategoryListComponent } from './admin/categories/category.list.component';
 import { CategoryEditComponent } from './admin/categories/category.edit.component';
+import { ChartListComponent } from './admin/charts/chart.list.component';
+import { ChartEditComponent } from './admin/charts/chart.edit.component';
 import { ComponentListComponent } from './admin/components/component.list.component';
 import { ComponentEditComponent } from './admin/components/component.edit.component';
 import { ComponentIndicatorListComponent } from './admin/componentindicators/componentindicator.list.component';
@@ -34,8 +36,6 @@ import { EntityTypeListComponent } from './admin/entitytypes/entitytype.list.com
 import { EntityTypeEditComponent } from './admin/entitytypes/entitytype.edit.component';
 import { FieldListComponent } from './admin/fields/field.list.component';
 import { FieldEditComponent } from './admin/fields/field.edit.component';
-import { FieldValueListComponent } from './admin/fieldvalues/fieldvalue.list.component';
-import { FieldValueEditComponent } from './admin/fieldvalues/fieldvalue.edit.component';
 import { FolderListComponent } from './admin/folders/folder.list.component';
 import { FolderEditComponent } from './admin/folders/folder.edit.component';
 import { FolderContentListComponent } from './admin/foldercontents/foldercontent.list.component';
@@ -44,10 +44,16 @@ import { GroupListComponent } from './admin/groups/group.list.component';
 import { GroupEditComponent } from './admin/groups/group.edit.component';
 import { IndicatorListComponent } from './admin/indicators/indicator.list.component';
 import { IndicatorEditComponent } from './admin/indicators/indicator.edit.component';
+import { IndicatorDateListComponent } from './admin/indicatordates/indicatordate.list.component';
+import { IndicatorDateEditComponent } from './admin/indicatordates/indicatordate.edit.component';
 import { IndicatorPermissionListComponent } from './admin/indicatorpermissions/indicatorpermission.list.component';
 import { IndicatorPermissionEditComponent } from './admin/indicatorpermissions/indicatorpermission.edit.component';
 import { ItemListComponent } from './admin/items/item.list.component';
 import { ItemEditComponent } from './admin/items/item.edit.component';
+import { ItemFieldListComponent } from './admin/itemfields/itemfield.list.component';
+import { ItemFieldEditComponent } from './admin/itemfields/itemfield.edit.component';
+import { ItemOptionListComponent } from './admin/itemoptions/itemoption.list.component';
+import { ItemOptionEditComponent } from './admin/itemoptions/itemoption.edit.component';
 import { LogFrameListComponent } from './admin/logframes/logframe.list.component';
 import { LogFrameEditComponent } from './admin/logframes/logframe.edit.component';
 import { LogFrameRowListComponent } from './admin/logframerows/logframerow.list.component';
@@ -60,8 +66,8 @@ import { MilestoneListComponent } from './admin/milestones/milestone.list.compon
 import { MilestoneEditComponent } from './admin/milestones/milestone.edit.component';
 import { OptionListComponent } from './admin/options/option.list.component';
 import { OptionEditComponent } from './admin/options/option.edit.component';
-import { OptionValueListComponent } from './admin/optionvalues/optionvalue.list.component';
-import { OptionValueEditComponent } from './admin/optionvalues/optionvalue.edit.component';
+import { OptionListListComponent } from './admin/optionlists/optionlist.list.component';
+import { OptionListEditComponent } from './admin/optionlists/optionlist.edit.component';
 import { OrganisationListComponent } from './admin/organisations/organisation.list.component';
 import { OrganisationEditComponent } from './admin/organisations/organisation.edit.component';
 import { ProjectListComponent } from './admin/projects/project.list.component';
@@ -97,7 +103,6 @@ import { TokenListComponent } from './admin/tokens/token.list.component';
 import { TokenEditComponent } from './admin/tokens/token.edit.component';
 import { UserListComponent } from './admin/users/user.list.component';
 import { UserEditComponent } from './admin/users/user.edit.component';
-import { QuillModule } from 'ngx-quill';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
@@ -108,6 +113,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
         AnswerOptionEditComponent,
         CategoryListComponent,
         CategoryEditComponent,
+        ChartListComponent,
+        ChartEditComponent,
         ComponentListComponent,
         ComponentEditComponent,
         ComponentIndicatorListComponent,
@@ -130,8 +137,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
         EntityTypeEditComponent,
         FieldListComponent,
         FieldEditComponent,
-        FieldValueListComponent,
-        FieldValueEditComponent,
         FolderListComponent,
         FolderEditComponent,
         FolderContentListComponent,
@@ -140,10 +145,16 @@ import { NgxEchartsModule } from 'ngx-echarts';
         GroupEditComponent,
         IndicatorListComponent,
         IndicatorEditComponent,
+        IndicatorDateListComponent,
+        IndicatorDateEditComponent,
         IndicatorPermissionListComponent,
         IndicatorPermissionEditComponent,
         ItemListComponent,
         ItemEditComponent,
+        ItemFieldListComponent,
+        ItemFieldEditComponent,
+        ItemOptionListComponent,
+        ItemOptionEditComponent,
         LogFrameListComponent,
         LogFrameEditComponent,
         LogFrameRowListComponent,
@@ -156,8 +167,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
         MilestoneEditComponent,
         OptionListComponent,
         OptionEditComponent,
-        OptionValueListComponent,
-        OptionValueEditComponent,
+        OptionListListComponent,
+        OptionListEditComponent,
         OrganisationListComponent,
         OrganisationEditComponent,
         ProjectListComponent,
@@ -197,14 +208,11 @@ import { NgxEchartsModule } from 'ngx-echarts';
     imports: [
         CommonModule,
         FormsModule,
-        RouterModule.forChild(GeneratedRoutes),
+        RouterModule.forChild(AdminRoutes),
         NgbModule,
         DragDropModule,
         SharedModule,
-        NgxEchartsModule.forRoot({
-            echarts: () => import('echarts')
-        }),
-        QuillModule
+        NgxEchartsModule
     ]
 })
 export class GeneratedModule { }

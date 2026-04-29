@@ -10,12 +10,12 @@ import { Group } from '../../common/models/group.model';
 
 @NgComponent({
     selector: 'field-modal',
-    templateUrl: './field.modal.component.html'
+    templateUrl: './field.modal.component.html',
+    standalone: false
 })
 export class FieldModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Field[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: FieldSearchOptions = new FieldSearchOptions();
     public fields: Field[];
@@ -26,6 +26,7 @@ export class FieldModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Field> = new EventEmitter<Field>();
     @Output() changes: EventEmitter<Field[]> = new EventEmitter<Field[]>();
+    @Input() selectedItems: Field[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;
@@ -37,6 +38,11 @@ export class FieldModalComponent implements OnInit {
     @Input() organisation: boolean;
     @Input() entity: boolean;
     @Input() indicator: boolean;
+    @Input() component: boolean;
+    @Input() relationship: boolean;
+    @Input() folder: boolean;
+    @Input() category: boolean;
+    @Input() subcategory: boolean;
     @Input() group: Group;
 
     constructor(
@@ -56,6 +62,11 @@ export class FieldModalComponent implements OnInit {
         this.searchOptions.organisation = this.organisation;
         this.searchOptions.entity = this.entity;
         this.searchOptions.indicator = this.indicator;
+        this.searchOptions.component = this.component;
+        this.searchOptions.relationship = this.relationship;
+        this.searchOptions.folder = this.folder;
+        this.searchOptions.category = this.category;
+        this.searchOptions.subcategory = this.subcategory;
         this.searchOptions.groupId = this.group?.groupId;
         this.modal = this.modalService.open(this.content, { size: 'xl', centered: true, scrollable: false });
         this.runSearch();

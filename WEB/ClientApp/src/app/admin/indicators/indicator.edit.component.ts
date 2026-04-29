@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BreadcrumbService } from '../../common/services/breadcrumb.service';
 import { ErrorService } from '../../common/services/error.service';
-import { Indicator } from '../../common/models/indicator.model';
+import { Indicator, IndicatorSearchOptions, IndicatorSearchResponse } from '../../common/models/indicator.model';
 import { Token, TokenSearchOptions } from '../../common/models/token.model';
 import { IndicatorService } from '../../common/services/indicator.service';
 import { Enum, Enums, OperatorTypes, TokenTypes, ParenthesisTypes, IndicatorStatuses, IndicatorTypes, ItemTypes, AggregationTypes, } from '../../common/models/enums.model';
@@ -19,12 +19,22 @@ import { AppService } from '../../common/services/app.service';
 import { DocumentService } from '../../common/services/document.service';
 import { Item } from '../../common/models/item.model';
 import { AppSettings } from '../../common/models/appsettings.model';
+import { SubcategoryService } from '../../common/services/subcategory.service';
+import { PagingHeaders } from '../../common/models/http.model';
+import { Subject } from 'rxjs';
+import { IndicatorDate, IndicatorDateSearchOptions, IndicatorDateSearchResponse } from '../../common/models/indicatordate.model';
+import { IndicatorDateService } from '../../common/services/indicatordate.service';
+import { AppDate } from '../../common/models/date.model';
+import { DateModalComponent } from '../dates/date.modal.component';
+import { FieldValueMapperService } from '../../common/services/field-value-mapper.service';
+import { AppSettingsService } from '../../common/services/appsettings.service';
 
 @Component({
     selector: 'indicator-edit',
     templateUrl: './indicator.edit.component.html',
     styleUrls: ['./indicator.edit.css'],
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class IndicatorEditComponent extends ItemComponent implements OnInit {
 
@@ -55,8 +65,20 @@ export class IndicatorEditComponent extends ItemComponent implements OnInit {
     private helpModal: NgbModalRef;
     public appSettings: AppSettings;
 
+    public groupIndicatorsSearchOptions = new IndicatorSearchOptions();
+    public groupIndicatorsHeaders = new PagingHeaders();
+    public groupIndicators: Indicator[] = [];
+    public showGroupIndicatorsSearch = false;
+
+    public indicatorDatesSearchOptions = new IndicatorDateSearchOptions();
+    public indicatorDatesHeaders = new PagingHeaders();
+    public indicatorDates: IndicatorDate[] = [];
+    public showIndicatorDatesSearch = false;
+
     @ViewChild('helpModal') helpContent: TemplateRef<any>;
     @ViewChild('indicatorModal') indicatorModal: IndicatorModalComponent;
+    @ViewChild('groupIndicatorModal') groupIndicatorModal: IndicatorModalComponent;
+    @ViewChild('dateModal') dateModal: DateModalComponent;
 
     constructor(
         private router: Router,
@@ -69,9 +91,13 @@ export class IndicatorEditComponent extends ItemComponent implements OnInit {
         protected errorService: ErrorService,
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
-        protected documentService: DocumentService
+        protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService,
+        private subcategoryService: SubcategoryService,
+        private indicatorDateService: IndicatorDateService,
+        private appSettingsService: AppSettingsService  
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {
@@ -86,16 +112,30 @@ export class IndicatorEditComponent extends ItemComponent implements OnInit {
                 this.indicator.indicatorId = indicatorId;
                 this.loadIndicator();
 
+                this.groupIndicatorsSearchOptions.groupingIndicatorId = this.indicator.indicatorId;
+                this.groupIndicatorsSearchOptions.includeParents = true;
+                this.searchGroupIndicators();
+
+                this.indicatorDatesSearchOptions.indicatorId = indicatorId;
+                this.indicatorDatesSearchOptions.includeParents = true;
+                this.searchIndicatorDates();
+
             }
             else {
                 this.indicator.indicatorStatus = IndicatorStatuses.Enabled;
-                //this.indicator.subcategoryId = this.route.snapshot.parent.params.subcategoryId;
                 this.setItem(this.indicator, { itemType: ItemTypes.Indicator, itemId: this.indicator.indicatorId } as Item);
+                if (this.route.snapshot.queryParams["subcategoryId"] !== undefined) {
+                    this.subcategoryService.get(this.route.snapshot.queryParams["subcategoryId"])
+                        .subscribe(subcategory => {
+                            this.indicator.subcategoryId = subcategory.subcategoryId;
+                            this.indicator.subcategory = subcategory;
+                        });
+                }
             }
 
         });
 
-        this.appService.getAppSettings().subscribe(appSettings => this.appSettings = appSettings);
+        this.appSettings = this.appSettingsService.appSettings;
 
     }
 
@@ -462,6 +502,128 @@ export class IndicatorEditComponent extends ItemComponent implements OnInit {
     closeHelpModal(): void {
         this.helpModal.dismiss();
     }
+
+    searchGroupIndicators(pageIndex = 0): Subject<IndicatorSearchResponse> {
+
+        this.groupIndicatorsSearchOptions.pageIndex = pageIndex;
+
+        const subject = new Subject<IndicatorSearchResponse>()
+
+        this.indicatorService.search(this.groupIndicatorsSearchOptions)
+            .subscribe({
+                next: response => {
+                    subject.next(response);
+                    this.groupIndicators = response.indicators;
+                    this.groupIndicatorsHeaders = response.headers;
+                },
+                error: err => {
+                    this.errorService.handleError(err, "Group Indicators", "Load");
+                }
+            });
+
+        return subject;
+
+    }
+
+    addGroupIndicator() {
+        this.groupIndicatorModal.open()
+            .result.then(indicator => {
+                if (indicator.indicatorId === this.indicator.indicatorId) {
+                    this.toastr.error("Indicators cannot be grouped into themselves");
+                    return;
+                }
+                //if (indicator.indicatorType === IndicatorTypes.Group) {
+                //    this.toastr.error("Grouped indicators cannot be added to other indicator groups");
+                //    return;
+                //}
+                if (indicator.groupingIndicatorId && indicator.groupingIndicatorId !== this.indicator.indicatorId) {
+                    this.toastr.error("This indicator is already a member of another group");
+                    return;
+                }
+                if (indicator.frequency != this.indicator.frequency) {
+                    this.toastr.error("Grouping indicator frequency must match the group indicator frequency");
+                    return;
+                }
+
+                indicator.groupingIndicatorId = this.indicator.indicatorId;
+                this.indicatorService.save(indicator)
+                    .subscribe({
+                        next: () => {
+                            this.toastr.success("The indicator has been added to the group.", "Group Indicator");
+                            this.searchGroupIndicators();
+                        },
+                        error: err => this.errorService.handleError(err, "Group Indicator", "Add")
+                    });
+            });
+    }
+
+    removeGroupedIndicator(indicator: Indicator) {
+        let modalRef = this.modalService.open(ConfirmModalComponent, { centered: true });
+        (modalRef.componentInstance as ConfirmModalComponent).options = {
+            title: "Remove Grouped Indicator",
+            text: `Are you sure you want to remove the indicator <strong>${indicator.name}</strong> from this group?`,
+            deleteStyle: true,
+            ok: "Remove"
+        } as ConfirmModalOptions;
+        modalRef.result.then(() => {
+            indicator.groupingIndicatorId = undefined;
+            this.indicatorService.save(indicator)
+                .subscribe({
+                    next: () => {
+                        this.toastr.success("The grouped indicator has been removed.", "Remove Grouped Indicator");
+                        this.searchGroupIndicators();
+                    },
+                    error: err => this.errorService.handleError(err, "Grouped Indicator", "Remove")
+                });
+        }, () => { });
+
+    }
+
+    searchIndicatorDates(pageIndex = 0): Subject<IndicatorDateSearchResponse> {
+
+        this.indicatorDatesSearchOptions.pageIndex = pageIndex;
+
+        const subject = new Subject<IndicatorDateSearchResponse>()
+
+        this.indicatorDateService.search(this.indicatorDatesSearchOptions)
+            .subscribe({
+                next: response => {
+                    subject.next(response);
+                    this.indicatorDates = response.indicatorDates;
+                    this.indicatorDatesHeaders = response.headers;
+                },
+                error: err => {
+                    this.errorService.handleError(err, "Indicator Dates", "Load");
+                }
+            });
+
+        return subject;
+
+    }
+
+    goToIndicatorDate(indicatorDate: IndicatorDate): void {
+        this.router.navigate(["indicatordates", indicatorDate.dateId], { relativeTo: this.route });
+    }
+
+    addIndicatorDates(): void {
+        this.dateModal.open();
+    }
+
+    changeDate(dates: AppDate[]): void {
+        if (!dates.length) return;
+        const dateIdList = dates.map(o => o.dateId);
+        this.indicatorService.saveIndicatorDates(this.indicator.indicatorId, dateIdList)
+            .subscribe({
+                next: () => {
+                    this.toastr.success("The indicator dates have been saved", "Save Indicator Dates");
+                    this.searchIndicatorDates(this.indicatorDatesHeaders.pageIndex);
+                },
+                error: err => {
+                    this.errorService.handleError(err, "Indicator Dates", "Save");
+                }
+            });
+    }
+
 }
 
 class LocalToken extends Token {

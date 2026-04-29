@@ -14,7 +14,8 @@ import { Question } from '../../common/models/question.model';
         useExisting: forwardRef(() => AnswerSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class AnswerSelectComponent implements OnInit, ControlValueAccessor {
 

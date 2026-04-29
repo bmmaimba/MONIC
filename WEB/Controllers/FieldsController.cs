@@ -22,12 +22,13 @@ namespace WEB.Controllers
             if (searchOptions.IncludeParents)
             {
                 results = results.Include(o => o.Group);
+                results = results.Include(o => o.OptionList);
             }
 
             if (searchOptions.IncludeChildren)
             {
-                results = results.Include(o => o.FieldValues);
-                results = results.Include(o => o.Options);
+                results = results.Include(o => o.ItemFields);
+                results = results.Include(o => o.ItemOptions);
             }
 
             if (!string.IsNullOrWhiteSpace(searchOptions.q))
@@ -37,6 +38,11 @@ namespace WEB.Controllers
             if (searchOptions.Organisation.HasValue) results = results.Where(o => o.Organisation == searchOptions.Organisation);
             if (searchOptions.Entity.HasValue) results = results.Where(o => o.Entity == searchOptions.Entity);
             if (searchOptions.Indicator.HasValue) results = results.Where(o => o.Indicator == searchOptions.Indicator);
+            if (searchOptions.Component.HasValue) results = results.Where(o => o.Component == searchOptions.Component);
+            if (searchOptions.Relationship.HasValue) results = results.Where(o => o.Relationship == searchOptions.Relationship);
+            if (searchOptions.Folder.HasValue) results = results.Where(o => o.Folder == searchOptions.Folder);
+            if (searchOptions.Category.HasValue) results = results.Where(o => o.Category == searchOptions.Category);
+            if (searchOptions.Subcategory.HasValue) results = results.Where(o => o.Subcategory == searchOptions.Subcategory);
             if (searchOptions.GroupId.HasValue) results = results.Where(o => o.GroupId == searchOptions.GroupId);
 
             results = results.OrderBy(o => o.Group.SortOrder).ThenBy(o => o.SortOrder);
@@ -49,6 +55,7 @@ namespace WEB.Controllers
         {
             var field = await db.Fields
                 .Include(o => o.Group)
+                .Include(o => o.OptionList)
                 .FirstOrDefaultAsync(o => o.FieldId == fieldId);
 
             if (field == null)
@@ -66,6 +73,10 @@ namespace WEB.Controllers
 
             if (await db.Fields.AnyAsync(o => o.Name == fieldDTO.Name && o.FieldId != fieldDTO.FieldId))
                 return BadRequest("Name already exists.");
+
+            if (fieldDTO.FieldType == FieldType.OptionList&& fieldDTO.OptionListId == null) return BadRequest("Option List fields must have an option list");
+
+            if (fieldDTO.FieldType != FieldType.OptionList) fieldDTO.OptionListId = null;
 
             var isNew = fieldDTO.FieldId == Guid.Empty;
 
@@ -107,9 +118,9 @@ namespace WEB.Controllers
 
             using (var transactionScope = Utilities.General.CreateTransactionScope())
             {
-                await db.Options.Where(o => o.FieldId == field.FieldId).ExecuteDeleteAsync();
+                await db.ItemFields.Where(o => o.FieldId == field.FieldId).ExecuteDeleteAsync();
 
-                await db.FieldValues.Where(o => o.FieldId == field.FieldId).ExecuteDeleteAsync();
+                await db.ItemOptions.Where(o => o.FieldId == field.FieldId).ExecuteDeleteAsync();
 
                 db.Entry(field).State = EntityState.Deleted;
 
@@ -135,21 +146,6 @@ namespace WEB.Controllers
             }
 
             await db.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        [HttpDelete("{fieldId:Guid}/options"), AuthorizeRoles(Roles.Administrator)]
-        public async Task<IActionResult> DeleteOptions(Guid fieldId)
-        {
-            using (var transactionScope = Utilities.General.CreateTransactionScope())
-            {
-                await db.OptionValues.Where(o => o.Option.FieldId == fieldId).ExecuteDeleteAsync();
-
-                await db.Options.Where(o => o.FieldId == fieldId).ExecuteDeleteAsync();
-
-                transactionScope.Complete();
-            }
 
             return Ok();
         }

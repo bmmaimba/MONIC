@@ -8,12 +8,12 @@ import { ErrorService } from '../../common/services/error.service';
 
 @NgComponent({
     selector: 'folder-modal',
-    templateUrl: './folder.modal.component.html'
+    templateUrl: './folder.modal.component.html',
+    standalone: false
 })
 export class FolderModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Folder[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: FolderSearchOptions = new FolderSearchOptions();
     public folders: Folder[];
@@ -22,6 +22,7 @@ export class FolderModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Folder> = new EventEmitter<Folder>();
     @Output() changes: EventEmitter<Folder[]> = new EventEmitter<Folder[]>();
+    @Input() selectedItems: Folder[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

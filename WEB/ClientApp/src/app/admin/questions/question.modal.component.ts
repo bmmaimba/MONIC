@@ -12,12 +12,12 @@ import { Questionnaire } from '../../common/models/questionnaire.model';
 
 @NgComponent({
     selector: 'question-modal',
-    templateUrl: './question.modal.component.html'
+    templateUrl: './question.modal.component.html',
+    standalone: false
 })
 export class QuestionModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Question[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: QuestionSearchOptions = new QuestionSearchOptions();
     public questions: Question[];
@@ -27,6 +27,7 @@ export class QuestionModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Question> = new EventEmitter<Question>();
     @Output() changes: EventEmitter<Question[]> = new EventEmitter<Question[]>();
+    @Input() selectedItems: Question[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

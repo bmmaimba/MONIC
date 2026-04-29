@@ -29,18 +29,20 @@ export class WidgetSettings {
 
 export class IndicatorBarChartSettings extends WidgetSettings {
     indicatorId: string;
+    entityTypeId: string;
     dateId: string;
 }
 
 export class IndicatorLineChartSettings extends WidgetSettings {
     indicatorId: string;
-    entityId: string;
+    entityIds: string[] = [];
     dateType: DateTypes;
 }
 
 export class IndicatorMapSettings extends WidgetSettings {
     indicatorId: string;
     dateId: string;
+    entityTypeId: string;
     minColor: string = "#ff0000";
     maxColor: string = "#00ff00";
     opacity: number = 1;

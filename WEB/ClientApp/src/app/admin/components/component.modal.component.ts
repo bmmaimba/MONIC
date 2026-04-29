@@ -9,12 +9,12 @@ import { Enum, Enums } from '../../common/models/enums.model';
 
 @NgComponent({
     selector: 'component-modal',
-    templateUrl: './component.modal.component.html'
+    templateUrl: './component.modal.component.html',
+    standalone: false
 })
 export class ComponentModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Component[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: ComponentSearchOptions = new ComponentSearchOptions();
     public components: Component[];
@@ -24,6 +24,7 @@ export class ComponentModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Component> = new EventEmitter<Component>();
     @Output() changes: EventEmitter<Component[]> = new EventEmitter<Component[]>();
+    @Input() selectedItems: Component[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

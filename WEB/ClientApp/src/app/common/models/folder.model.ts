@@ -1,8 +1,8 @@
 import { SearchOptions, PagingHeaders } from './http.model';
 import { FolderContent } from './foldercontent.model';
 import { IHasFields } from './ihasfields.model';
-import { FieldValue } from './fieldvalue.model';
-import { OptionValue } from './optionvalue.model';
+import { ItemField } from './itemfield.model';
+import { ItemOption } from './itemoption.model';
 
 export class Folder implements IHasFields {
     folderId: string;
@@ -14,8 +14,8 @@ export class Folder implements IHasFields {
 
     subfolders: Folder[];
     folderContents: FolderContent[];
-    fieldValues: FieldValue[] = [];
-    optionValues: OptionValue[] = [];
+    itemFields: ItemField[] = [];
+    itemOptions: ItemOption[] = [];
 
     constructor() {
         this.folderId = "00000000-0000-0000-0000-000000000000";

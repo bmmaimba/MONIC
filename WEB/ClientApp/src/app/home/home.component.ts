@@ -7,20 +7,20 @@ import { AuthService } from '../common/services/auth.service';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
+    standalone: false
 })
 export class HomeComponent implements OnInit {
 
     public profile: ProfileModel;
     public widgetTypes = Enums.WidgetTypes;
-
+    
     constructor(
         private authService: AuthService
     ) {
     }
 
     ngOnInit(): void {
-        this.authService.getProfile()
-            .subscribe(profile => this.profile = profile);
+        this.profile = this.authService.profile;
     }
 
     addWidget(widgetType: Enum): void {

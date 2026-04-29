@@ -8,7 +8,7 @@
 
         <fieldset class="group">
 
-            <div class="row g-3">
+            <div class="row gx-3">
 
                 <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6">
                     <div class="form-group" [ngClass]="{ 'is-invalid': name.invalid }">
@@ -115,7 +115,7 @@
                 <ng-container *ngFor="let field of fields | groupPipe : null">
 
                     <!--[(file)]="files[field.fieldId]" (downloadClicked)="download($event)"-->
-                    <field [field]="field" id="{{field.fieldId}}" name="{{field.fieldId}}" [ngModel]="fieldValues.get(field.fieldId)" (ngModelChange)="fieldValues.set(field.fieldId, $event)" [fieldValues]="fieldValues" class="{{field | fieldSizePipe}}"></field>
+                    <field [field]="field" id="{{field.fieldId}}" name="{{field.fieldId}}" [ngModel]="itemFields.get(field.fieldId)" (ngModelChange)="itemFields.set(field.fieldId, $event)" [itemFields]="itemFields" class="{{field | fieldSizePipe}}"></field>
 
                 </ng-container>
 
@@ -129,12 +129,12 @@
 
                 <legend>{{group.name}}</legend>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <ng-container *ngFor="let field of fields | groupPipe : group.groupId">
 
                         <!--[(file)]="files[field.fieldId]" (downloadClicked)="download($event)"-->
-                        <field [field]="field" id="{{field.fieldId}}" name="{{field.fieldId}}" [ngModel]="fieldValues.get(field.fieldId)" (ngModelChange)="fieldValues.set(field.fieldId, $event)" [fieldValues]="fieldValues" class="{{field | fieldSizePipe}}"></field>
+                        <field [field]="field" id="{{field.fieldId}}" name="{{field.fieldId}}" [ngModel]="itemFields.get(field.fieldId)" (ngModelChange)="itemFields.set(field.fieldId, $event)" [itemFields]="itemFields" class="{{field | fieldSizePipe}}"></field>
 
                     </ng-container>
 

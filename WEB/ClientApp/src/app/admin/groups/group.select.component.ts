@@ -12,7 +12,8 @@ import { Enum } from '../../common/models/enums.model';
         useExisting: forwardRef(() => GroupSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class GroupSelectComponent implements OnInit, ControlValueAccessor {
 

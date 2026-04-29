@@ -43,8 +43,8 @@ namespace WEB.Controllers
                 return NotFound();
 
             var item = await db.Items
-               .Include(o => o.FieldValues)
-               .Include(o => o.OptionValues)
+               .Include(o => o.ItemFields)
+               .Include(o => o.ItemOptions)
                .FirstOrDefaultAsync(o => o.ItemId == organisationId);
 
             var organisationDTO = ModelFactory.Create(organisation, true, false, item);
@@ -95,12 +95,15 @@ namespace WEB.Controllers
                 if (organisation == null)
                     return NotFound();
 
+                if (!await db.Items.AnyAsync(o => o.ItemId == organisation.OrganisationId))
+                    db.Entry(new Item { ItemId = organisation.OrganisationId, ItemType = ItemType.Organisation }).State = EntityState.Added;
+
                 db.Entry(organisation).State = EntityState.Modified;
             }
 
             ModelFactory.Hydrate(organisation, organisationDTO);
 
-            await ItemFunctions.HydrateFieldsAsync(db, organisation.OrganisationId, organisationDTO.FieldValues, organisationDTO.OptionValues);
+            await ItemFunctions.HydrateFieldsAsync(db, organisation.OrganisationId, organisationDTO.ItemFields, organisationDTO.ItemOptions);
 
             await db.SaveChangesAsync();
 
@@ -122,6 +125,7 @@ namespace WEB.Controllers
             if (await db.Users.AnyAsync(o => o.OrganisationId == organisation.OrganisationId))
                 return BadRequest("Unable to delete the organisation as it has related users");
 
+            ItemFunctions.DeleteDocuments(db, organisationId);
             ItemFunctions.DeleteFields(db, organisationId, true);
 
             db.Entry(organisation).State = EntityState.Deleted;
@@ -154,15 +158,14 @@ namespace WEB.Controllers
                 await db.EntityPermissions.Where(o => o.Entity.OrganisationId == organisationId).ExecuteDeleteAsync();
 
                 foreach (var entity in db.Entities.Where(o => o.OrganisationId == organisationId).ToList())
-            {
-                ItemFunctions.DeleteFields(db, entity.EntityId, true);
-            }
+                {
+                    ItemFunctions.DeleteDocuments(db, entity.EntityId);
+                    ItemFunctions.DeleteFields(db, entity.EntityId, true);
+                }
 
-            await db.Entities.Where(o => o.OrganisationId == organisationId).ExecuteDeleteAsync();
+                await db.Entities.Where(o => o.OrganisationId == organisationId).ExecuteDeleteAsync();
 
-            await db.SaveChangesAsync();
-
-            transactionScope.Complete();
+                await db.SaveChangesAsync();
 
                 transactionScope.Complete();
             }

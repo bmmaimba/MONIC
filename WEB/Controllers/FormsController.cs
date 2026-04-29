@@ -28,6 +28,7 @@ namespace WEB.Controllers
                     && o.EntityTypeId == entityTypeId
                     && o.IndicatorType == IndicatorType.Collected
                     )
+                .Where(o => !o.UseIndicatorDates || o.IndicatorDates.Any(d => d.DateId == dateId))
                 .OrderBy(o => o.Subcategory.Category.SortOrder)
                 .ThenBy(o => o.Subcategory.SortOrder)
                 .ThenBy(o => o.SortOrder)
@@ -35,6 +36,16 @@ namespace WEB.Controllers
                 .Select(o => ModelFactory.Create(o));
 
             var indicatorIds = indicators.Select(o => o.IndicatorId).ToArray();
+
+            var optionListIds = indicators.Where(o => o.DataType == DataType.OptionList).Select(o => o.OptionListId).ToArray();
+
+            var optionsMap = (
+                await db.Options
+                    .Where(o => optionListIds.Contains(o.OptionListId))
+                    .ToListAsync()
+                )
+                .GroupBy(o => o.OptionListId)
+                .ToDictionary(o => o.Key, o => o.Select(x => ModelFactory.Create(x)));
 
             var data = (await db.Data
                 .Where(o => indicatorIds.Contains(o.IndicatorId) && o.EntityId == entityId && o.DateId == dateId)
@@ -44,7 +55,8 @@ namespace WEB.Controllers
             return Ok(new
             {
                 indicators,
-                data
+                data,
+                optionsMap
             });
         }
 
@@ -89,6 +101,15 @@ namespace WEB.Controllers
 
                 if (indicator.IndicatorType != IndicatorType.Collected)
                     return BadRequest($"Indicator {indicator.Code} is not a Collected Indicator Type");
+
+                if (indicator.UseIndicatorDates && !await db.IndicatorDates.Where(o => o.IndicatorId == indicator.IndicatorId && o.DateId == dateId).AnyAsync())
+                    return BadRequest($"Indicator {indicator.Code} is not collected on this date");
+
+                if (indicator.Minimum.HasValue && datumDTO.Value.HasValue && datumDTO.Value < indicator.Minimum)
+                    return BadRequest($"Value is below the minimum allowed for indicator {indicator.Code}");
+
+                if (indicator.Maximum.HasValue && datumDTO.Value.HasValue && datumDTO.Value > indicator.Maximum)
+                    return BadRequest($"Value is above the maximum allowed for indicator {indicator.Code}");
 
                 Datum datum = null;
 

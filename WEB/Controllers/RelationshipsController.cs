@@ -48,8 +48,8 @@ namespace WEB.Controllers
                 return NotFound();
 
             var item = await db.Items
-               .Include(o => o.FieldValues)
-               .Include(o => o.OptionValues)
+               .Include(o => o.ItemFields)
+               .Include(o => o.ItemOptions)
                .FirstOrDefaultAsync(o => o.ItemId == relationshipId);
 
             return Ok(ModelFactory.Create(relationship, true, false, item));
@@ -86,7 +86,7 @@ namespace WEB.Controllers
 
             ModelFactory.Hydrate(relationship, relationshipDTO);
 
-            await ItemFunctions.HydrateFieldsAsync(db, relationship.RelationshipId, relationshipDTO.FieldValues, relationshipDTO.OptionValues);
+            await ItemFunctions.HydrateFieldsAsync(db, relationship.RelationshipId, relationshipDTO.ItemFields, relationshipDTO.ItemOptions);
 
             await db.SaveChangesAsync();
 
@@ -102,6 +102,7 @@ namespace WEB.Controllers
             if (relationship == null)
                 return NotFound();
 
+            ItemFunctions.DeleteDocuments(db, relationshipId);
             ItemFunctions.DeleteFields(db, relationshipId, true);
 
             db.Entry(relationship).State = EntityState.Deleted;

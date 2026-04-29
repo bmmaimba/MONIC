@@ -23,7 +23,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 @NgComponent({
     selector: 'app-theoryofchange',
     templateUrl: './theoryofchange.html',
-    styleUrls: ['./theoryofchange.css']
+    styleUrls: ['./theoryofchange.css'],
+    standalone: false
 })
 export class TheoryOfChangeComponent implements OnInit {
 
@@ -241,7 +242,7 @@ export class TheoryOfChangeComponent implements OnInit {
                     modalRef.result.then(
                         (result: boolean) => {
                             if (result) {
-                                // edit existing relationship. load first to get fieldvalues, etc.
+                                // edit existing relationship. load first to get field values, etc.
                                 this.relationshipService.get(relationship.relationshipId)
                                     .subscribe(lr => this.openRelationshipModal(lr));
                             } else {

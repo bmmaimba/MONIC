@@ -16,7 +16,7 @@
 
             <fieldset class="group">
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-4">
                         <div class="form-group" [ngClass]="{ 'is-invalid': name.invalid }">
@@ -33,6 +33,34 @@
 
                             <div *ngIf="name.errors?.maxlength" class="invalid-feedback">
                                 Name must be at most 2000 characters long
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-4">
+                        <div class="form-group" [ngClass]="{ 'is-invalid': value.invalid }">
+
+                            <label for="value">
+                                Value:
+                            </label>
+
+                            <input id="value" name="value" class="form-control" type="number" [(ngModel)]="option.value" #value="ngModel" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-4">
+                        <div class="form-group" [ngClass]="{ 'is-invalid': color.invalid }">
+
+                            <label for="color">
+                                Color:
+                            </label>
+
+                            <app-color id="color" name="color" [(ngModel)]="option.color" #color="ngModel"></app-color>
+
+                            <div *ngIf="color.errors?.maxlength" class="invalid-feedback">
+                                Color must be at most 9 characters long
                             </div>
 
                         </div>

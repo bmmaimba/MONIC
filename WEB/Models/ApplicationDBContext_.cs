@@ -7,6 +7,7 @@ namespace WEB.Models
         public DbSet<Answer> Answers { get; set; }
         public DbSet<AnswerOption> AnswerOptions { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Chart> Charts { get; set; }
         public DbSet<Component> Components { get; set; }
         public DbSet<ComponentIndicator> ComponentIndicators { get; set; }
         public DbSet<DataReview> DataReviews { get; set; }
@@ -20,20 +21,22 @@ namespace WEB.Models
         public DbSet<EntityPermission> EntityPermissions { get; set; }
         public DbSet<EntityType> EntityTypes { get; set; }
         public DbSet<Field> Fields { get; set; }
-        public DbSet<FieldValue> FieldValues { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<FolderContent> FolderContents { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Indicator> Indicators { get; set; }
+        public DbSet<IndicatorDate> IndicatorDates { get; set; }
         public DbSet<IndicatorPermission> IndicatorPermissions { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<ItemField> ItemFields { get; set; }
+        public DbSet<ItemOption> ItemOptions { get; set; }
         public DbSet<LogFrame> LogFrames { get; set; }
         public DbSet<LogFrameRow> LogFrameRows { get; set; }
         public DbSet<LogFrameRowComponent> LogFrameRowComponents { get; set; }
         public DbSet<LogFrameRowIndicator> LogFrameRowIndicators { get; set; }
         public DbSet<Milestone> Milestones { get; set; }
         public DbSet<Option> Options { get; set; }
-        public DbSet<OptionValue> OptionValues { get; set; }
+        public DbSet<OptionList> OptionLists { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -70,6 +73,11 @@ namespace WEB.Models
             modelBuilder.Entity<Category>()
                 .HasIndex(o => o.Code)
                 .HasDatabaseName("IX_Category_Code")
+                .IsUnique();
+
+            modelBuilder.Entity<Chart>()
+                .HasIndex(o => o.Name)
+                .HasDatabaseName("IX_Chart_Name")
                 .IsUnique();
 
             modelBuilder.Entity<Component>()
@@ -142,10 +150,6 @@ namespace WEB.Models
                 .HasDatabaseName("IX_Field_Name")
                 .IsUnique();
 
-            modelBuilder.Entity<FieldValue>()
-                .HasKey(o => new { o.ItemId, o.FieldId })
-                .HasName("PK_FieldValue");
-
             modelBuilder.Entity<FolderContent>()
                 .HasIndex(o => new { o.FolderId, o.Name })
                 .HasDatabaseName("IX_FolderContent_Name")
@@ -164,6 +168,18 @@ namespace WEB.Models
                 .HasIndex(o => o.Code)
                 .HasDatabaseName("IX_Indicator_Code")
                 .IsUnique();
+
+            modelBuilder.Entity<IndicatorDate>()
+                .HasKey(o => new { o.IndicatorId, o.DateId })
+                .HasName("PK_IndicatorDate");
+
+            modelBuilder.Entity<ItemField>()
+                .HasKey(o => new { o.ItemId, o.FieldId })
+                .HasName("PK_ItemField");
+
+            modelBuilder.Entity<ItemOption>()
+                .HasKey(o => new { o.ItemId, o.FieldId, o.OptionId })
+                .HasName("PK_ItemOption");
 
             modelBuilder.Entity<LogFrame>()
                 .HasIndex(o => o.Name)
@@ -184,13 +200,14 @@ namespace WEB.Models
                 .IsUnique();
 
             modelBuilder.Entity<Option>()
-                .HasIndex(o => new { o.FieldId, o.Name })
+                .HasIndex(o => new { o.OptionListId, o.Name })
                 .HasDatabaseName("IX_Option_Name")
                 .IsUnique();
 
-            modelBuilder.Entity<OptionValue>()
-                .HasKey(o => new { o.ItemId, o.OptionId })
-                .HasName("PK_OptionValue");
+            modelBuilder.Entity<OptionList>()
+                .HasIndex(o => o.Name)
+                .HasDatabaseName("IX_OptionList_Name")
+                .IsUnique();
 
             modelBuilder.Entity<Organisation>()
                 .HasIndex(o => o.Name)
@@ -235,12 +252,12 @@ namespace WEB.Models
                 .HasName("PK_SkipLogicOption");
 
             modelBuilder.Entity<Subcategory>()
-                .HasIndex(o => o.Code)
-                .HasDatabaseName("IX_Subcategory_Code")
-                .IsUnique();
-            modelBuilder.Entity<Subcategory>()
                 .HasIndex(o => new { o.CategoryId, o.Name })
                 .HasDatabaseName("IX_Subcategory_Name")
+                .IsUnique();
+            modelBuilder.Entity<Subcategory>()
+                .HasIndex(o => o.Code)
+                .HasDatabaseName("IX_Subcategory_Code")
                 .IsUnique();
 
             modelBuilder.Entity<Task>()
@@ -376,6 +393,8 @@ namespace WEB.Models
 
         public void AddNullableUniqueIndexes()
         {
+            Database.ExecuteSqlRaw($"DROP INDEX IF EXISTS IX_Options_OptionListId_Value ON Options;");
+            Database.ExecuteSqlRaw($"CREATE UNIQUE NONCLUSTERED INDEX IX_Options_OptionListId_Value ON Options(OptionListId, Value) WHERE Value IS NOT NULL;");
             CreateNullableUniqueIndex("Questionnaires", "PublicCode");
             CreateNullableUniqueIndex("Responses", "PublicCode");
         }

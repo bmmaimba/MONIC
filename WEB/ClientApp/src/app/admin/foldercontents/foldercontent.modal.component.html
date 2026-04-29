@@ -6,7 +6,7 @@
     </div>
     
     <div class="modal-body p-5" [ngClass]="{ 'mb-6': !showFooter }">
-
+        
         <form (submit)="runSearch()" novalidate>
 
             <fieldset>
@@ -14,7 +14,7 @@
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && folder!=undefined">Filtered by folder: {{folder.name}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.folderId=undefined;folder=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && addedBy!=undefined">Filtered by added by: {{addedBy.fullName}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.addedById=undefined;addedBy=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="form-group">

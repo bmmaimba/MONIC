@@ -13,7 +13,8 @@ import { QuestionOptionGroup } from '../../common/models/questionoptiongroup.mod
         useExisting: forwardRef(() => QuestionOptionSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class QuestionOptionSelectComponent implements OnInit, ControlValueAccessor {
 

@@ -14,11 +14,13 @@ import { AppService } from '../../common/services/app.service';
 import { DocumentService } from '../../common/services/document.service';
 import { ItemTypes } from '../../common/models/enums.model';
 import { Item } from '../../common/models/item.model';
+import { FieldValueMapperService } from '../../common/services/field-value-mapper.service';
 import { FadeThenShrink } from '../../common/animations/fadethenshrink';
 
 @NgComponent({
     selector: 'relationship-edit',
     templateUrl: './relationship.edit.component.html',
+    standalone: false,
     animations: [FadeThenShrink]
 })
 export class RelationshipEditComponent extends ItemComponent implements OnInit {
@@ -36,9 +38,10 @@ export class RelationshipEditComponent extends ItemComponent implements OnInit {
         protected errorService: ErrorService,
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
-        protected documentService: DocumentService
+        protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {
@@ -55,7 +58,10 @@ export class RelationshipEditComponent extends ItemComponent implements OnInit {
                 this.loadRelationship();
 
             } else {
-                this.setItem(this.relationship, { itemType: ItemTypes.Relationship, itemId: this.relationship.relationshipId } as Item);
+                this.setItem(this.relationship, {
+                    itemType: ItemTypes.Relationship,
+                    itemId: this.relationship.relationshipId
+                } as Item);
             }
 
         });
@@ -69,7 +75,10 @@ export class RelationshipEditComponent extends ItemComponent implements OnInit {
                 next: relationship => {
                     this.relationship = relationship;
                     this.changeBreadcrumb();
-                    this.setItem(this.relationship, { itemType: ItemTypes.Relationship, itemId: this.relationship.relationshipId } as Item);
+                    this.setItem(this.relationship, {
+                        itemType: ItemTypes.Relationship,
+                        itemId: this.relationship.relationshipId
+                    } as Item);
                     this.searchDocuments();
                 },
                 error: err => {
@@ -96,10 +105,14 @@ export class RelationshipEditComponent extends ItemComponent implements OnInit {
             .subscribe({
                 next: relationship => {
                     this.toastr.success("The relationship has been saved", "Save Relationship");
-                    if (this.isNew) this.router.navigate(["../", relationship.relationshipId], { relativeTo: this.route });
-                    else {
+                    if (this.isNew) {
+                        this.router.navigate(["../", relationship.relationshipId], { relativeTo: this.route });
+                    } else {
                         this.relationship = relationship;
-                        this.setItem(this.relationship, { itemType: ItemTypes.Relationship, itemId: this.relationship.relationshipId } as Item);
+                        this.setItem(this.relationship, {
+                            itemType: ItemTypes.Relationship,
+                            itemId: this.relationship.relationshipId
+                        } as Item);
                     }
                 },
                 error: err => {

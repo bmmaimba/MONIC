@@ -13,7 +13,8 @@ import { Questionnaire } from '../../common/models/questionnaire.model';
         useExisting: forwardRef(() => SectionSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class SectionSelectComponent implements OnInit, ControlValueAccessor {
 

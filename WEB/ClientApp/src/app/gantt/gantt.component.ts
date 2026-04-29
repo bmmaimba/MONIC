@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreadcrumbService } from '../common/services/breadcrumb.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { ConfirmModalComponent, ConfirmModalOptions } from '../common/components/confirm.component';
@@ -21,7 +21,8 @@ import { GanttTaskComponent } from './gantt.task.component';
 @Component({
     selector: 'gantt',
     templateUrl: './gantt.component.html',
-    styleUrls: ['./gantt.component.css']
+    styleUrls: ['./gantt.component.css'],
+    standalone: false
 })
 export class GanttComponent implements OnInit {
 

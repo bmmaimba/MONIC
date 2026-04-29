@@ -16,6 +16,8 @@ namespace WEB.Models
         [Required]
         public FieldType FieldType { get; set; }
 
+        public Guid? OptionListId { get; set; }
+
         [Required]
         public bool Organisation { get; set; }
 
@@ -33,6 +35,12 @@ namespace WEB.Models
 
         [Required]
         public bool Folder { get; set; }
+
+        [Required]
+        public bool Category { get; set; }
+
+        [Required]
+        public bool Subcategory { get; set; }
 
         [Required]
         public bool Required { get; set; }
@@ -67,12 +75,15 @@ namespace WEB.Models
         [Required]
         public short Rows { get; set; }
 
-        public virtual ICollection<Option> Options { get; set; } = new List<Option>();
+        public virtual ICollection<ItemField> ItemFields { get; set; } = new List<ItemField>();
 
-        public virtual ICollection<FieldValue> FieldValues { get; set; } = new List<FieldValue>();
+        public virtual ICollection<ItemOption> ItemOptions { get; set; } = new List<ItemOption>();
 
         [ForeignKey("GroupId")]
         public virtual Group Group { get; set; }
+
+        [ForeignKey("OptionListId")]
+        public virtual OptionList OptionList { get; set; }
 
         public Field()
         {

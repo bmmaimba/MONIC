@@ -16,7 +16,7 @@
 
             <fieldset class="group">
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-12">
                         <div class="form-group" [ngClass]="{ 'is-invalid': name.invalid }">
@@ -45,7 +45,7 @@
                                 Html:
                             </label>
 
-                            <quill-editor name="html" id="html" [(ngModel)]="folderContent.html" #html="ngModel" [modules]="quillConfig.modules"></quill-editor>
+                            <quill-editor name="html" id="html" [(ngModel)]="folderContent.html" #html="ngModel"></quill-editor>
 
                             <div *ngIf="html.errors?.required" class="invalid-feedback">
                                 Html is required

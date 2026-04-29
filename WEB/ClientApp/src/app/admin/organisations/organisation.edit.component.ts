@@ -21,11 +21,13 @@ import { Enum, Enums, ItemTypes, Roles } from '../../common/models/enums.model';
 import { FadeThenShrink } from '../../common/animations/fadethenshrink';
 import { DocumentService } from '../../common/services/document.service';
 import { Item } from '../../common/models/item.model';
+import { FieldValueMapperService } from '../../common/services/field-value-mapper.service';
 
 @Component({
     selector: 'organisation-edit',
     templateUrl: './organisation.edit.component.html',
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class OrganisationEditComponent extends ItemComponent implements OnInit {
 
@@ -54,9 +56,10 @@ export class OrganisationEditComponent extends ItemComponent implements OnInit {
         protected errorService: ErrorService,
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
-        protected documentService: DocumentService
+        protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {

@@ -6,7 +6,7 @@
     </div>
     
     <div class="modal-body p-5" [ngClass]="{ 'mb-6': !showFooter }">
-
+        
         <form (submit)="runSearch()" novalidate>
 
             <fieldset>
@@ -14,7 +14,7 @@
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && user!=undefined">Filtered by user: {{user.fullName}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.userId=undefined;user=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && reviewStatus!=undefined">Filtered by review status: {{reviewStatus.label}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.reviewStatus=undefined;reviewStatus=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -29,9 +29,11 @@
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!reviewStatus">
-                        <select id="reviewStatus" name="reviewStatus" [(ngModel)]="searchOptions.reviewStatus" #reviewStatus="ngModel" class="form-select">
-                            <option *ngFor="let reviewStatus of reviewStatuses" [ngValue]="reviewStatus.value">{{ reviewStatus.label }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="reviewStatus" name="reviewStatus" [(ngModel)]="searchOptions.reviewStatus" #reviewStatus="ngModel" class="form-select">
+                                <option *ngFor="let reviewStatus of reviewStatuses" [ngValue]="reviewStatus.value">{{ reviewStatus.label }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4">

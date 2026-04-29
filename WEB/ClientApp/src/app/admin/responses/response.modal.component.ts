@@ -7,16 +7,16 @@ import { PagingHeaders } from '../../common/models/http.model';
 import { ErrorService } from '../../common/services/error.service';
 import { Questionnaire } from '../../common/models/questionnaire.model';
 import { Entity } from '../../common/models/entity.model';
-import { Date } from '../../common/models/date.model';
+import { AppDate } from '../../common/models/date.model';
 
 @NgComponent({
     selector: 'response-modal',
-    templateUrl: './response.modal.component.html'
+    templateUrl: './response.modal.component.html',
+    standalone: false
 })
 export class ResponseModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Response[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: ResponseSearchOptions = new ResponseSearchOptions();
     public responses: Response[];
@@ -25,6 +25,7 @@ export class ResponseModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Response> = new EventEmitter<Response>();
     @Output() changes: EventEmitter<Response[]> = new EventEmitter<Response[]>();
+    @Input() selectedItems: Response[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;
@@ -34,7 +35,7 @@ export class ResponseModalComponent implements OnInit {
     @Input() title = this.multiple ? "Select responses" : "Select a response";
     @Input() questionnaire: Questionnaire;
     @Input() entity: Entity;
-    @Input() date: Date;
+    @Input() date: AppDate;
 
     constructor(
         private modalService: NgbModal,

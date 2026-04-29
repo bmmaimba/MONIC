@@ -6,6 +6,8 @@ import { AnswerOptionListComponent } from './admin/answeroptions/answeroption.li
 import { AnswerOptionEditComponent } from './admin/answeroptions/answeroption.edit.component';
 import { CategoryListComponent } from './admin/categories/category.list.component';
 import { CategoryEditComponent } from './admin/categories/category.edit.component';
+import { ChartListComponent } from './admin/charts/chart.list.component';
+import { ChartEditComponent } from './admin/charts/chart.edit.component';
 import { ComponentListComponent } from './admin/components/component.list.component';
 import { ComponentEditComponent } from './admin/components/component.edit.component';
 import { ComponentIndicatorListComponent } from './admin/componentindicators/componentindicator.list.component';
@@ -28,8 +30,6 @@ import { EntityTypeListComponent } from './admin/entitytypes/entitytype.list.com
 import { EntityTypeEditComponent } from './admin/entitytypes/entitytype.edit.component';
 import { FieldListComponent } from './admin/fields/field.list.component';
 import { FieldEditComponent } from './admin/fields/field.edit.component';
-import { FieldValueListComponent } from './admin/fieldvalues/fieldvalue.list.component';
-import { FieldValueEditComponent } from './admin/fieldvalues/fieldvalue.edit.component';
 import { FolderListComponent } from './admin/folders/folder.list.component';
 import { FolderEditComponent } from './admin/folders/folder.edit.component';
 import { FolderContentListComponent } from './admin/foldercontents/foldercontent.list.component';
@@ -38,10 +38,16 @@ import { GroupListComponent } from './admin/groups/group.list.component';
 import { GroupEditComponent } from './admin/groups/group.edit.component';
 import { IndicatorListComponent } from './admin/indicators/indicator.list.component';
 import { IndicatorEditComponent } from './admin/indicators/indicator.edit.component';
+import { IndicatorDateListComponent } from './admin/indicatordates/indicatordate.list.component';
+import { IndicatorDateEditComponent } from './admin/indicatordates/indicatordate.edit.component';
 import { IndicatorPermissionListComponent } from './admin/indicatorpermissions/indicatorpermission.list.component';
 import { IndicatorPermissionEditComponent } from './admin/indicatorpermissions/indicatorpermission.edit.component';
 import { ItemListComponent } from './admin/items/item.list.component';
 import { ItemEditComponent } from './admin/items/item.edit.component';
+import { ItemFieldListComponent } from './admin/itemfields/itemfield.list.component';
+import { ItemFieldEditComponent } from './admin/itemfields/itemfield.edit.component';
+import { ItemOptionListComponent } from './admin/itemoptions/itemoption.list.component';
+import { ItemOptionEditComponent } from './admin/itemoptions/itemoption.edit.component';
 import { LogFrameListComponent } from './admin/logframes/logframe.list.component';
 import { LogFrameEditComponent } from './admin/logframes/logframe.edit.component';
 import { LogFrameRowListComponent } from './admin/logframerows/logframerow.list.component';
@@ -54,8 +60,8 @@ import { MilestoneListComponent } from './admin/milestones/milestone.list.compon
 import { MilestoneEditComponent } from './admin/milestones/milestone.edit.component';
 import { OptionListComponent } from './admin/options/option.list.component';
 import { OptionEditComponent } from './admin/options/option.edit.component';
-import { OptionValueListComponent } from './admin/optionvalues/optionvalue.list.component';
-import { OptionValueEditComponent } from './admin/optionvalues/optionvalue.edit.component';
+import { OptionListListComponent } from './admin/optionlists/optionlist.list.component';
+import { OptionListEditComponent } from './admin/optionlists/optionlist.edit.component';
 import { OrganisationListComponent } from './admin/organisations/organisation.list.component';
 import { OrganisationEditComponent } from './admin/organisations/organisation.edit.component';
 import { ProjectListComponent } from './admin/projects/project.list.component';
@@ -91,8 +97,9 @@ import { TokenListComponent } from './admin/tokens/token.list.component';
 import { TokenEditComponent } from './admin/tokens/token.edit.component';
 import { UserListComponent } from './admin/users/user.list.component';
 import { UserEditComponent } from './admin/users/user.edit.component';
+import { ToolsComponent } from './admin/tools/tools.component';
 
-export const GeneratedRoutes: Route[] = [
+const routes: Route[] = [
     {
         path: 'answers',
         canActivate: [AccessGuard],
@@ -147,6 +154,29 @@ export const GeneratedRoutes: Route[] = [
                         }
                     }
                 ]
+            }
+        ]
+    },
+    {
+        path: 'charts',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: ChartListComponent,
+        data: {
+            submenu: 'charts',
+            breadcrumb: 'Charts'
+        },
+        children: [
+            {
+                path: ':chartId',
+                component: ChartEditComponent,
+                canActivate: [AccessGuard],
+                canActivateChild: [AccessGuard],
+                data: {
+                    menu: '',
+                    submenu: 'charts',
+                    breadcrumb: 'Add Chart'
+                }
             }
         ]
     },
@@ -383,43 +413,6 @@ export const GeneratedRoutes: Route[] = [
                     menu: 'admin',
                     submenu: 'fields',
                     breadcrumb: 'Add Field'
-                },
-                children: [
-                    {
-                        path: 'options/:optionId',
-                        component: OptionEditComponent,
-                        canActivate: [AccessGuard],
-                        canActivateChild: [AccessGuard],
-                        data: {
-                            menu: 'admin',
-                            submenu: 'options',
-                            breadcrumb: 'Add Option'
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        path: 'fieldvalues',
-        canActivate: [AccessGuard],
-        canActivateChild: [AccessGuard],
-        component: FieldValueListComponent,
-        data: {
-            menu: 'admin',
-            submenu: 'fieldValues',
-            breadcrumb: 'Field Values'
-        },
-        children: [
-            {
-                path: ':itemId/:fieldId',
-                component: FieldValueEditComponent,
-                canActivate: [AccessGuard],
-                canActivateChild: [AccessGuard],
-                data: {
-                    menu: 'admin',
-                    submenu: 'fieldValues',
-                    breadcrumb: 'Add Field Value'
                 }
             }
         ]
@@ -515,9 +508,32 @@ export const GeneratedRoutes: Route[] = [
                     menu: 'admin',
                     submenu: 'indicators',
                     breadcrumb: 'Add Indicator'
-                }
+                },
+                children: [
+                    {
+                        path: 'indicatordates/:dateId',
+                        component: IndicatorDateEditComponent,
+                        canActivate: [AccessGuard],
+                        canActivateChild: [AccessGuard],
+                        data: {
+                            menu: 'admin',
+                            submenu: 'indicatorDates',
+                            breadcrumb: 'Add Indicator Date'
+                        }
+                    }
+                ]
             }
         ]
+    },
+    {
+        path: 'indicatordates',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: IndicatorDateListComponent,
+        data: {
+            submenu: 'indicatorDates',
+            breadcrumb: 'Indicator Dates'
+        }
     },
     {
         path: 'indicatorpermissions',
@@ -577,6 +593,54 @@ export const GeneratedRoutes: Route[] = [
                         }
                     }
                 ]
+            }
+        ]
+    },
+    {
+        path: 'itemfields',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: ItemFieldListComponent,
+        data: {
+            menu: 'admin',
+            submenu: 'itemFields',
+            breadcrumb: 'Item Fields'
+        },
+        children: [
+            {
+                path: ':itemId/:fieldId',
+                component: ItemFieldEditComponent,
+                canActivate: [AccessGuard],
+                canActivateChild: [AccessGuard],
+                data: {
+                    menu: 'admin',
+                    submenu: 'itemFields',
+                    breadcrumb: 'Add Item Field'
+                }
+            }
+        ]
+    },
+    {
+        path: 'itemoptions',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: ItemOptionListComponent,
+        data: {
+            menu: 'admin',
+            submenu: 'itemOptions',
+            breadcrumb: 'Item Options'
+        },
+        children: [
+            {
+                path: ':itemId/:fieldId/:optionId',
+                component: ItemOptionEditComponent,
+                canActivate: [AccessGuard],
+                canActivateChild: [AccessGuard],
+                data: {
+                    menu: 'admin',
+                    submenu: 'itemOptions',
+                    breadcrumb: 'Add Item Option'
+                }
             }
         ]
     },
@@ -697,26 +761,37 @@ export const GeneratedRoutes: Route[] = [
         }
     },
     {
-        path: 'optionvalues',
+        path: 'optionlists',
         canActivate: [AccessGuard],
         canActivateChild: [AccessGuard],
-        component: OptionValueListComponent,
+        component: OptionListListComponent,
         data: {
-            menu: 'admin',
-            submenu: 'optionValues',
-            breadcrumb: 'Option Values'
+            submenu: 'optionLists',
+            breadcrumb: 'Option Lists'
         },
         children: [
             {
-                path: ':itemId/:optionId',
-                component: OptionValueEditComponent,
+                path: ':optionListId',
+                component: OptionListEditComponent,
                 canActivate: [AccessGuard],
                 canActivateChild: [AccessGuard],
                 data: {
-                    menu: 'admin',
-                    submenu: 'optionValues',
-                    breadcrumb: 'Add Option Value'
-                }
+                    menu: '',
+                    submenu: 'optionLists',
+                    breadcrumb: 'Add Option List'
+                },
+                children: [
+                    {
+                        path: 'options/:optionId',
+                        component: OptionEditComponent,
+                        canActivate: [AccessGuard],
+                        canActivateChild: [AccessGuard],
+                        data: {
+                            submenu: 'options',
+                            breadcrumb: 'Add Option'
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -1157,5 +1232,25 @@ export const GeneratedRoutes: Route[] = [
                 ]
             }
         ]
+    },
+    {
+        path: 'tools',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: ToolsComponent,
+        pathMatch: 'full',
+        data: {
+            breadcrumb: 'Tools',
+            menu: 'admin'
+        },
+    },
+];
+
+export const AdminRoutes: Route[] = [
+    {
+        path: 'admin',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        children: routes,
     }
 ];

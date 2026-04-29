@@ -22,8 +22,8 @@ namespace WEB.Controllers
             if (searchOptions.IncludeChildren)
             {
                 results = results.Include(o => o.Documents);
-                results = results.Include(o => o.FieldValues);
-                results = results.Include(o => o.OptionValues);
+                results = results.Include(o => o.ItemFields);
+                results = results.Include(o => o.ItemOptions);
             }
 
             if (!string.IsNullOrWhiteSpace(searchOptions.q))
@@ -91,11 +91,11 @@ namespace WEB.Controllers
             if (item == null)
                 return NotFound();
 
-            if (await db.FieldValues.AnyAsync(o => o.ItemId == item.ItemId))
-                return BadRequest("Unable to delete the item as it has related field values");
+            if (await db.ItemFields.AnyAsync(o => o.ItemId == item.ItemId))
+                return BadRequest("Unable to delete the item as it has related fields");
 
-            if (await db.OptionValues.AnyAsync(o => o.ItemId == item.ItemId))
-                return BadRequest("Unable to delete the item as it has related option values");
+            if (await db.ItemOptions.AnyAsync(o => o.ItemId == item.ItemId))
+                return BadRequest("Unable to delete the item as it has related options");
 
             if (await db.Documents.AnyAsync(o => o.ItemId == item.ItemId))
                 return BadRequest("Unable to delete the item as it has related documents");
@@ -107,10 +107,10 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpDelete("{itemId:Guid}/optionvalues"), AuthorizeRoles(Roles.Administrator)]
-        public async Task<IActionResult> DeleteOptionValues(Guid itemId)
+        [HttpDelete("{itemId:Guid}/itemoptions"), AuthorizeRoles(Roles.Administrator)]
+        public async Task<IActionResult> DeleteItemOptions(Guid itemId)
         {
-            await db.OptionValues.Where(o => o.ItemId == itemId).ExecuteDeleteAsync();
+            await db.ItemOptions.Where(o => o.ItemId == itemId).ExecuteDeleteAsync();
 
             return Ok();
         }

@@ -24,22 +24,23 @@ import { environment } from '../../../environments/environment';
 import { QuestionnaireDownloadComponent } from './questionnaire.download.component';
 import { QuestionnaireGenerateSummariesComponent } from './questionnaire.generate.summaries.component';
 import { Question } from '../../common/models/question.model';
-import { Date } from '../../common/models/date.model';
+import { AppDate } from '../../common/models/date.model';
 import { AnswerService } from '../../common/services/answer.service';
 import { QuestionOptionService } from '../../common/services/questionoption.service';
 import { AnswerSearchOptions, AnswerSearchResponse } from '../../common/models/answer.model';
 import { QuestionOptionSearchOptions, QuestionOptionSearchResponse } from '../../common/models/questionoption.model';
-import { EChartsOption } from 'echarts';
+import { EChartsOption } from 'echarts/types/dist/shared';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { QuestionSummaryService } from '../../common/services/questionsummary.service';
 import { QuestionSummary } from '../../common/models/questionsummary.model';
-import { OptionValueSearchOptions, OptionValueSearchResponse } from '../../common/models/optionvalue.model';
-import { OptionValueService } from '../../common/services/optionvalue.service';
+import { EChartsCoreOption } from 'echarts/core';
+import { ItemOptionService } from '../../common/services/itemoption.service';
+import { ItemOptionSearchOptions, ItemOptionSearchResponse } from '../../common/models/itemoption.model';
 
 class AnalysisResults {
     questionSummary: QuestionSummary;
-    chartOptions: EChartsOption;
+    chartOptions: EChartsCoreOption;
     showAnswers = false;
     answers: AnalysisAnswer[] = [];
     editing = false;
@@ -53,7 +54,8 @@ class AnalysisAnswer {
 @NgComponent({
     selector: 'questionnaire-edit',
     templateUrl: './questionnaire.edit.component.html',
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class QuestionnaireEditComponent implements OnInit, OnDestroy {
 
@@ -77,7 +79,7 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
         questionId: undefined as string,
         question: undefined as Question,
         dateId: undefined as string,
-        date: undefined as Date,
+        date: undefined as AppDate,
         optionId: undefined as string
     };
     public analysisResults = new AnalysisResults();
@@ -98,7 +100,7 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
         private answerService: AnswerService,
         private questionOptionService: QuestionOptionService,
         private questionSummaryService: QuestionSummaryService,
-        private optionValueService: OptionValueService
+        private itemOptionService: ItemOptionService
     ) {
     }
 
@@ -409,20 +411,20 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
             answerSearchResults: this.answerService.search({ pageSize: 0, questionId: this.analysisOptions.questionId, includeChildren: true } as AnswerSearchOptions),
             responseSearchResults: this.responseService.search({ pageSize: 0, questionnaireId: this.questionnaire.questionnaireId, includeParents: true } as ResponseSearchOptions),
             questionOptionResults: of(undefined),
-            optionValueSearchResults: of(undefined)
+            itemOptionSearchResults: of(undefined)
         } as {
             questionSummary: Observable<QuestionSummary>,
             answerSearchResults: Observable<AnswerSearchResponse>,
             questionOptionResults: Observable<QuestionOptionSearchResponse>,
             responseSearchResults: Observable<ResponseSearchResponse>,
-            optionValueSearchResults: Observable<OptionValueSearchResponse>
+            itemOptionSearchResults: Observable<ItemOptionSearchResponse>
         };
 
         if (this.analysisOptions.question.questionType === QuestionTypes.OptionList && this.analysisOptions.question.questionOptionGroupId)
             apiCalls.questionOptionResults = this.questionOptionService.search({ pageSize: 0, questionOptionGroupId: this.analysisOptions.question.questionOptionGroupId } as QuestionOptionSearchOptions);
 
         if (this.analysisOptions.optionId)
-            apiCalls.optionValueSearchResults = this.optionValueService.search({ pageSize: 0, optionId: this.analysisOptions.optionId } as OptionValueSearchOptions);
+            apiCalls.itemOptionSearchResults = this.itemOptionService.search({ pageSize: 0, optionId: this.analysisOptions.optionId } as ItemOptionSearchOptions);
 
         forkJoin(apiCalls).subscribe({
             next: data => {
@@ -448,7 +450,7 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
                                     const response = data.responseSearchResults.responses.find(o => o.responseId === answer.responseId);
 
                                     // skip if filtering by an option
-                                    if (this.analysisOptions.optionId && !data.optionValueSearchResults.optionValues.find(o => o.itemId === response.entityId))
+                                    if (this.analysisOptions.optionId && !data.itemOptionSearchResults.itemOptions.find(o => o.itemId === response.entityId))
                                         continue;
 
                                     this.analysisResults.answers.push({ entity: response.entity.shortName, entityCode: response.entity.code, value: questionOption.label } as AnalysisAnswer);
@@ -462,7 +464,7 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
 
                     this.analysisResults.chartOptions = {
                         grid: {
-                            left: 40,
+                            left: 50,
                             right: 10,
                             top: 10,
                             bottom: 100
@@ -506,7 +508,7 @@ export class QuestionnaireEditComponent implements OnInit, OnDestroy {
                         const response = data.responseSearchResults.responses.find(o => o.responseId === answer.responseId);
 
                         // skip if filtering by an option
-                        if (this.analysisOptions.optionId && !data.optionValueSearchResults.optionValues.find(o => o.itemId === response.entityId))
+                        if (this.analysisOptions.optionId && !data.itemOptionSearchResults.itemOptions.find(o => o.itemId === response.entityId))
                             continue;
 
                         this.analysisResults.answers.push({ entity: response.entity.shortName, entityCode: response.entity.code, value: answer.value } as AnalysisAnswer);

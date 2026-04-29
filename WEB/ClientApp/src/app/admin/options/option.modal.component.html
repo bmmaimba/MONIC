@@ -6,14 +6,14 @@
     </div>
     
     <div class="modal-body p-5" [ngClass]="{ 'mb-6': !showFooter }">
-
+        
         <form (submit)="runSearch()" novalidate>
 
             <fieldset>
 
-                <div class="alert alert-info alert-dismissible" *ngIf="showFilters && field!=undefined">Filtered by field: {{field.name}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.fieldId=undefined;field=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
+                <div class="alert alert-info alert-dismissible" *ngIf="showFilters && optionList!=undefined">Filtered by option list: {{optionList.name}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.optionListId=undefined;optionList=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -21,9 +21,9 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!field">
+                    <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!optionList">
                         <div class="form-group">
-                            <field-select id="fieldId" name="fieldId" [(ngModel)]="searchOptions.fieldId"></field-select>
+                            <option-list-select id="optionListId" name="optionListId" [(ngModel)]="searchOptions.optionListId"></option-list-select>
                         </div>
                     </div>
 
@@ -44,14 +44,14 @@
                 <thead class="thead-light">
                     <tr>
                         <th class="text-center w-20px" *ngIf="multiple"><i class="fas fa-fw cursor-pointer" [ngClass]="{ 'fa-check-square': allSelected, 'fa-square': !allSelected }" (click)="toggleAll()"></i></th>
-                        <th *ngIf="!field">Field</th>
+                        <th *ngIf="!optionList">Option List</th>
                         <th>Name</th>
                     </tr>
                 </thead>
                 <tbody class="cursor-pointer">
                     <tr *ngFor="let option of options" (click)="select(option)" [ngClass]="{ 'table-info': isSelected(option) }">
                         <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square': isSelected(option), 'fa-square': !isSelected(option) }" class="fas fa-fw"></i></td>
-                        <td *ngIf="!field">{{ option.field.name }}</td>
+                        <td *ngIf="!optionList">{{ option.optionList.name }}</td>
                         <td>{{ option.name }}</td>
                     </tr>
                 </tbody>

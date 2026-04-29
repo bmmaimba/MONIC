@@ -13,7 +13,8 @@ import { OptionSortComponent } from './option.sort.component';
 @NgComponent({
     selector: 'option-list',
     templateUrl: './option.list.component.html',
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class OptionListComponent implements OnInit {
 
@@ -70,7 +71,7 @@ export class OptionListComponent implements OnInit {
     }
 
     goToOption(option: Option): void {
-        this.router.navigate(["/fields", option.field.fieldId, "options", option.optionId]);
+        this.router.navigate(["/optionlists", option.optionList.optionListId, "options", option.optionId]);
     }
 }
 

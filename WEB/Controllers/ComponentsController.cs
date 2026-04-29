@@ -48,8 +48,8 @@ namespace WEB.Controllers
                 return NotFound();
 
             var item = await db.Items
-               .Include(o => o.FieldValues)
-               .Include(o => o.OptionValues)
+               .Include(o => o.ItemFields)
+               .Include(o => o.ItemOptions)
                .FirstOrDefaultAsync(o => o.ItemId == componentId);
 
             return Ok(ModelFactory.Create(component, true, false, item));
@@ -86,12 +86,15 @@ namespace WEB.Controllers
                 if (component == null)
                     return NotFound();
 
+                if (!await db.Items.AnyAsync(o => o.ItemId == component.ComponentId))
+                    db.Entry(new Item { ItemId = component.ComponentId, ItemType = ItemType.Component }).State = EntityState.Added;
+
                 db.Entry(component).State = EntityState.Modified;
             }
 
             ModelFactory.Hydrate(component, componentDTO);
 
-            await ItemFunctions.HydrateFieldsAsync(db, component.ComponentId, componentDTO.FieldValues, componentDTO.OptionValues);
+            await ItemFunctions.HydrateFieldsAsync(db, component.ComponentId, componentDTO.ItemFields, componentDTO.ItemOptions);
 
             await db.SaveChangesAsync();
 
@@ -120,9 +123,10 @@ namespace WEB.Controllers
 
                 await db.ComponentIndicators.Where(o => o.ComponentId == component.ComponentId).ExecuteDeleteAsync();
 
+                ItemFunctions.DeleteDocuments(db, componentId);
                 ItemFunctions.DeleteFields(db, componentId, true);
 
-            db.Entry(component).State = EntityState.Deleted;
+                db.Entry(component).State = EntityState.Deleted;
 
                 await db.SaveChangesAsync();
 

@@ -5,16 +5,16 @@ import { OptionSearchOptions, OptionSearchResponse, Option } from '../../common/
 import { OptionService } from '../../common/services/option.service';
 import { PagingHeaders } from '../../common/models/http.model';
 import { ErrorService } from '../../common/services/error.service';
-import { Field } from '../../common/models/field.model';
+import { OptionList } from '../../common/models/optionlist.model';
 
 @NgComponent({
     selector: 'option-modal',
-    templateUrl: './option.modal.component.html'
+    templateUrl: './option.modal.component.html',
+    standalone: false
 })
 export class OptionModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Option[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: OptionSearchOptions = new OptionSearchOptions();
     public options: Option[];
@@ -23,6 +23,7 @@ export class OptionModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Option> = new EventEmitter<Option>();
     @Output() changes: EventEmitter<Option[]> = new EventEmitter<Option[]>();
+    @Input() selectedItems: Option[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;
@@ -30,7 +31,7 @@ export class OptionModalComponent implements OnInit {
     @Input() showFooter = true;
     @Input() resetOnOpen = false;
     @Input() title = this.multiple ? "Select options" : "Select an option";
-    @Input() field: Field;
+    @Input() optionList: OptionList;
 
     constructor(
         private modalService: NgbModal,
@@ -45,7 +46,7 @@ export class OptionModalComponent implements OnInit {
 
     open(): NgbModalRef {
         if (this.resetOnOpen) this.selectedItems = [];
-        this.searchOptions.fieldId = this.field?.fieldId;
+        this.searchOptions.optionListId = this.optionList?.optionListId;
         this.modal = this.modalService.open(this.content, { size: 'xl', centered: true, scrollable: false });
         this.runSearch();
         this.modal.result.then((option: Option | Option[]) => {

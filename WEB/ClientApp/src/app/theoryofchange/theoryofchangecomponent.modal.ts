@@ -20,10 +20,12 @@ import { ComponentIndicator, ComponentIndicatorSearchOptions, ComponentIndicator
 import { ComponentIndicatorService } from '../common/services/componentindicator.service';
 import { forkJoin, Observable, Subject, tap } from 'rxjs';
 import { PagingHeaders } from '../common/models/http.model';
+import { FieldValueMapperService } from '../common/services/field-value-mapper.service';
 
 @NgComponent({
     selector: 'theoryofchangecomponent-modal',
-    templateUrl: './theoryofchangecomponent.modal.html'
+    templateUrl: './theoryofchangecomponent.modal.html',
+    standalone: false
 })
 export class TheoryOfChangeComponentModal extends ItemComponent implements OnInit {
 
@@ -45,10 +47,11 @@ export class TheoryOfChangeComponentModal extends ItemComponent implements OnIni
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
         protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService,
         private componentIndicatorService: ComponentIndicatorService,
         private theoryOfChangeComponentService: TheoryOfChangeComponentService
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {
@@ -63,10 +66,10 @@ export class TheoryOfChangeComponentModal extends ItemComponent implements OnIni
             // clone to avoid cancelled changes affecting source page
             this.component = { ...component };
             //this.component.children = [...component.children];
+            this.componentIndicatorSearchOptions.componentId = component.componentId;
         }
         this.setItem(this.component, { itemType: ItemTypes.Component, itemId: this.component.componentId } as Item);
         this.searchDocuments();
-        this.componentIndicatorSearchOptions.componentId = component.componentId;
         this.componentIndicatorSearchOptions.includeParents = true;
         this.searchComponentIndicators();
     }

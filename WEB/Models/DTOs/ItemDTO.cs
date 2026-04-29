@@ -13,9 +13,9 @@ namespace WEB.Models
 
         public virtual List<DocumentDTO> Documents { get; set; } = new List<DocumentDTO>();
 
-        public virtual List<FieldValueDTO> FieldValues { get; set; } = new List<FieldValueDTO>();
+        public virtual List<ItemFieldDTO> ItemFields { get; set; } = new List<ItemFieldDTO>();
 
-        public virtual List<OptionValueDTO> OptionValues { get; set; } = new List<OptionValueDTO>();
+        public virtual List<ItemOptionDTO> ItemOptions { get; set; } = new List<ItemOptionDTO>();
 
     }
 
@@ -34,10 +34,10 @@ namespace WEB.Models
             {
                 foreach (var document in item.Documents)
                     itemDTO.Documents.Add(Create(document));
-                foreach (var fieldValue in item.FieldValues)
-                    itemDTO.FieldValues.Add(Create(fieldValue));
-                foreach (var optionValue in item.OptionValues)
-                    itemDTO.OptionValues.Add(Create(optionValue));
+                foreach (var field in item.ItemFields)
+                    itemDTO.ItemFields.Add(Create(field));
+                foreach (var option in item.ItemOptions)
+                    itemDTO.ItemOptions.Add(Create(option));
             }
 
             return itemDTO;

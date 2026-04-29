@@ -1,17 +1,18 @@
 import { Component as NgComponent, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import * as d3 from 'd3';
-import { EChartsOption } from 'echarts';
+import { EChartsOption } from 'echarts/types/dist/shared';
 import { forkJoin } from 'rxjs';
 import { Questionnaire } from '../models/questionnaire.model';
 import { DateService } from '../services/date.service';
-import { Date } from '../models/date.model';
+import { AppDate } from '../models/date.model';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { QuestionnaireBarChartSettings, Widget } from '../models/widget.model';
 import { SurveyProgress } from '../models/survey.model';
+import * as d3 from 'd3';
 
 @NgComponent({
     selector: 'app-questionnaire-bar-chart',
-    templateUrl: './questionnaire.barchart.component.html'
+    templateUrl: './questionnaire.barchart.component.html',
+    standalone: false
 })
 export class QuestionnaireBarChartComponent implements OnInit, Widget {
 
@@ -30,7 +31,7 @@ export class QuestionnaireBarChartComponent implements OnInit, Widget {
     public chartOptions: EChartsOption;
 
     public questionnaire: Questionnaire;
-    public date: Date;
+    public date: AppDate;
     public data: SurveyProgress[];
 
     constructor(
@@ -85,7 +86,7 @@ export class QuestionnaireBarChartComponent implements OnInit, Widget {
 
                 this.chartOptions = {
                     grid: {
-                        left: 40,
+                        left: 50,
                         right: 10,
                         top: 10,
                         bottom: 50

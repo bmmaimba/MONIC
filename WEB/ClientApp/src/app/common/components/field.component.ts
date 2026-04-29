@@ -2,10 +2,7 @@ import { Component, OnInit, Input, EventEmitter, ChangeDetectorRef, Output, View
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, Validator, AbstractControl, ValidationErrors, NG_VALIDATORS, NgModel } from "@angular/forms";
 import { FieldTypes } from '../models/enums.model';
 import { Field } from '../models/field.model';
-//import { File } from './../models/file.model';
 import { Option } from '../models/option.model';
-import { DownloadService } from "../services/download.service";
-import { ErrorService } from "../services/error.service";
 
 enum ControlTypes {
     checkbox = 0,
@@ -15,8 +12,6 @@ enum ControlTypes {
     select = 4,
     textbox = 5,
     textArea = 6,
-    //fileInput = 7,
-    //date = 8
 }
 
 @Component({
@@ -34,7 +29,8 @@ enum ControlTypes {
             multi: true,
             useExisting: FieldComponent
         }
-    ]
+    ],
+    standalone: false
 })
 export class FieldComponent implements OnInit, ControlValueAccessor, Validator {
 
@@ -51,20 +47,16 @@ export class FieldComponent implements OnInit, ControlValueAccessor, Validator {
     @ViewChild("select") select: NgModel;
     @ViewChild("textbox") textbox: NgModel;
     @ViewChild("textArea") textArea: NgModel;
-//    @ViewChild("fileInput") fileInput: any;
 
     @Input() set field(field: Field) {
         this._field = field;
         this.setData();
     }
     @Output() isValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    //@Input() file: File;
-    @Input() fieldValues = new Map<string, string | string[] | Date | boolean>();
+    @Input() itemFields = new Map<string, string | string[] | Date | boolean>();
 
     constructor(
-        private cdref: ChangeDetectorRef,
-        private errorService: ErrorService,
-        private downloadService: DownloadService
+        private cdref: ChangeDetectorRef
     ) {
     }
 
@@ -76,14 +68,14 @@ export class FieldComponent implements OnInit, ControlValueAccessor, Validator {
 
     setData(): void {
 
-        if (this._field.fieldType === FieldTypes.YesNo) this.controlType === ControlTypes.checkbox;
-        //else if (this._field.fieldType === FieldTypes.File) this.controlType === ControlTypes.fileInput;
+        if (this._field.fieldType === FieldTypes.YesNo) this.controlType = ControlTypes.checkbox;
+        //else if (this._field.fieldType === FieldTypes.File) this.controlType = ControlTypes.fileInput;
         else if (this._field.fieldType === FieldTypes.Text && !this._field.multiLine) this.controlType = ControlTypes.textbox;
         else if (this._field.fieldType === FieldTypes.Text && this._field.multiLine) this.controlType = ControlTypes.textArea;
-        else if (this._field.fieldType === FieldTypes.Picklist && this._field.multiple && this._field.radioCheckbox) this.controlType = ControlTypes.multipleCheckbox;
-        else if (this._field.fieldType === FieldTypes.Picklist && this._field.multiple && !this._field.radioCheckbox) this.controlType = ControlTypes.select;
-        else if (this._field.fieldType === FieldTypes.Picklist && !this._field.multiple && this._field.radioCheckbox) this.controlType = ControlTypes.radioButton;
-        else if (this._field.fieldType === FieldTypes.Picklist && !this._field.multiple && !this._field.radioCheckbox) this.controlType = ControlTypes.multipleSelect;
+        else if (this._field.fieldType === FieldTypes.OptionList && this._field.multiple && this._field.radioCheckbox) this.controlType = ControlTypes.multipleCheckbox;
+        else if (this._field.fieldType === FieldTypes.OptionList && this._field.multiple && !this._field.radioCheckbox) this.controlType = ControlTypes.select;
+        else if (this._field.fieldType === FieldTypes.OptionList && !this._field.multiple && this._field.radioCheckbox) this.controlType = ControlTypes.radioButton;
+        else if (this._field.fieldType === FieldTypes.OptionList && !this._field.multiple && !this._field.radioCheckbox) this.controlType = ControlTypes.multipleSelect;
         else throw "Invalid control type";
 
         // input type=file label doesn't like it with dashes
@@ -111,7 +103,7 @@ export class FieldComponent implements OnInit, ControlValueAccessor, Validator {
     writeValue(obj: any): void {
         this._value = obj;
         // checkbox lists used the map to store values, populate this map
-        if (this._field.fieldType === FieldTypes.Picklist && this._field.multiple && this._field.radioCheckbox) {
+        if (this._field.fieldType === FieldTypes.OptionList && this._field.multiple && this._field.radioCheckbox) {
             if (obj) (obj as string[]).forEach(o => this.checkboxes.set(o, true));
         }
 
@@ -128,6 +120,7 @@ export class FieldComponent implements OnInit, ControlValueAccessor, Validator {
     setDisabledState?(isDisabled: boolean): void { }
 
     validate(): ValidationErrors {
+        
         if (this.controlType === ControlTypes.checkbox) return this.checkbox?.errors;
         if (this.controlType === ControlTypes.multipleSelect) return this.multipleSelect?.errors;
         if (this.controlType === ControlTypes.radioButton) return this.radioButton?.errors;

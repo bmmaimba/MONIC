@@ -10,12 +10,12 @@ import { LogFrame } from '../../common/models/logframe.model';
 
 @NgComponent({
     selector: 'log-frame-row-modal',
-    templateUrl: './logframerow.modal.component.html'
+    templateUrl: './logframerow.modal.component.html',
+    standalone: false
 })
 export class LogFrameRowModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: LogFrameRow[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: LogFrameRowSearchOptions = new LogFrameRowSearchOptions();
     public logFrameRows: LogFrameRow[];
@@ -25,6 +25,7 @@ export class LogFrameRowModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<LogFrameRow> = new EventEmitter<LogFrameRow>();
     @Output() changes: EventEmitter<LogFrameRow[]> = new EventEmitter<LogFrameRow[]>();
+    @Input() selectedItems: LogFrameRow[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

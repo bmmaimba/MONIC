@@ -9,12 +9,12 @@ import { QuestionOptionGroup } from '../../common/models/questionoptiongroup.mod
 
 @NgComponent({
     selector: 'question-option-modal',
-    templateUrl: './questionoption.modal.component.html'
+    templateUrl: './questionoption.modal.component.html',
+    standalone: false
 })
 export class QuestionOptionModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: QuestionOption[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: QuestionOptionSearchOptions = new QuestionOptionSearchOptions();
     public questionOptions: QuestionOption[];
@@ -23,6 +23,7 @@ export class QuestionOptionModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<QuestionOption> = new EventEmitter<QuestionOption>();
     @Output() changes: EventEmitter<QuestionOption[]> = new EventEmitter<QuestionOption[]>();
+    @Input() selectedItems: QuestionOption[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

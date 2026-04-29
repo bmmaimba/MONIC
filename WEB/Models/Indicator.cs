@@ -13,7 +13,7 @@ namespace WEB.Models
         [Required]
         public Guid SubcategoryId { get; set; }
 
-        [Required(AllowEmptyStrings = true), MaxLength(250)]
+        [Required(AllowEmptyStrings = true), MaxLength(500)]
         public string Name { get; set; }
 
         [Required(AllowEmptyStrings = true), MaxLength(20)]
@@ -38,6 +38,12 @@ namespace WEB.Models
         public bool RequiresApprove { get; set; }
 
         [Required]
+        public bool LowerIsBetter { get; set; }
+
+        [Required]
+        public bool UseIndicatorDates { get; set; }
+
+        [Required]
         public bool DisableNote { get; set; }
 
         [Required]
@@ -52,8 +58,33 @@ namespace WEB.Models
         [Required]
         public DataType DataType { get; set; }
 
+        public Guid? OptionListId { get; set; }
+
         [Required]
         public byte DecimalPlaces { get; set; }
+
+        [Column(TypeName = "decimal(20, 8)")]
+        public decimal? Minimum { get; set; }
+
+        [Column(TypeName = "decimal(20, 8)")]
+        public decimal? Maximum { get; set; }
+
+        [MaxLength(250)]
+        public string ShortName { get; set; }
+
+        [MaxLength(50)]
+        public string Label { get; set; }
+
+        [MaxLength(7)]
+        public string Color { get; set; }
+
+        [Required(AllowEmptyStrings = true), MaxLength(10)]
+        public string Prefix { get; set; }
+
+        [Required(AllowEmptyStrings = true), MaxLength(10)]
+        public string Suffix { get; set; }
+
+        public Guid? GroupingIndicatorId { get; set; }
 
         [Required]
         public DateTime CreatedDateUtc { get; set; }
@@ -82,8 +113,18 @@ namespace WEB.Models
 
         public virtual ICollection<ComponentIndicator> ComponentIndicators { get; set; } = new List<ComponentIndicator>();
 
+        public virtual ICollection<Indicator> GroupIndicators { get; set; } = new List<Indicator>();
+
+        public virtual ICollection<IndicatorDate> IndicatorDates { get; set; } = new List<IndicatorDate>();
+
         [ForeignKey("EntityTypeId")]
         public virtual EntityType EntityType { get; set; }
+
+        [ForeignKey("GroupingIndicatorId")]
+        public virtual Indicator GroupingIndicator { get; set; }
+
+        [ForeignKey("OptionListId")]
+        public virtual OptionList OptionList { get; set; }
 
         [ForeignKey("SubcategoryId")]
         public virtual Subcategory Subcategory { get; set; }

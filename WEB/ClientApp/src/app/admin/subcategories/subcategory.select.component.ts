@@ -13,7 +13,8 @@ import { Category } from '../../common/models/category.model';
         useExisting: forwardRef(() => SubcategorySelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class SubcategorySelectComponent implements OnInit, ControlValueAccessor {
 

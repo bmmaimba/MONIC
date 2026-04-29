@@ -13,7 +13,8 @@ import { LogFrame } from '../../common/models/logframe.model';
         useExisting: forwardRef(() => LogFrameRowSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class LogFrameRowSelectComponent implements OnInit, ControlValueAccessor {
 

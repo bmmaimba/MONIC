@@ -83,12 +83,24 @@ export class IndicatorService extends SearchQuery {
         return this.http.post<void>(`${environment.baseApiUrl}indicators/sort?subcategoryId=${subcategoryId}`, ids);
     }
 
+    saveIndicatorDates(indicatorId: string, dateIds: string[]): Observable<void> {
+        return this.http.post<void>(`${environment.baseApiUrl}indicators/${indicatorId}/indicatordates`, dateIds);
+    }
+
     deleteLogFrameRowIndicators(indicatorId: string): Observable<void> {
         return this.http.delete<void>(`${environment.baseApiUrl}indicators/${indicatorId}/logframerowindicators`);
     }
 
     deleteComponentIndicators(indicatorId: string): Observable<void> {
         return this.http.delete<void>(`${environment.baseApiUrl}indicators/${indicatorId}/componentindicators`);
+    }
+
+    deleteGroupIndicators(indicatorId: string): Observable<void> {
+        return this.http.delete<void>(`${environment.baseApiUrl}indicators/${indicatorId}/groupindicators`);
+    }
+
+    deleteIndicatorDates(indicatorId: string): Observable<void> {
+        return this.http.delete<void>(`${environment.baseApiUrl}indicators/${indicatorId}/indicatordates`);
     }
 
 }

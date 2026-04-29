@@ -1,18 +1,21 @@
+using Org.BouncyCastle.Tls;
+using System.Threading.Tasks;
+
 namespace WEB.Models
 {
     public class FieldsDTO
     {
-        public List<FieldValueDTO> FieldValues { get; set; }
+        public List<ItemFieldDTO> ItemFields { get; set; }
 
-        public List<OptionValueDTO> OptionValues { get; set; }
+        public List<ItemOptionDTO> ItemOptions { get; set; }
 
         //public List<FileDTO> Files { get; set; }
 
         public void AddFields(Item item)
         {
             if (item == null) return;
-            FieldValues = item.FieldValues.Select(o => ModelFactory.Create(o, false)).ToList();
-            OptionValues = item.OptionValues.Select(o => ModelFactory.Create(o, false)).ToList();
+            ItemFields = item.ItemFields.Select(o => ModelFactory.Create(o, false)).ToList();
+            ItemOptions = item.ItemOptions.Select(o => ModelFactory.Create(o, false)).ToList();
         }
 
         public bool ValidateFields(ApplicationDbContext db, ItemType itemType, out string error)
@@ -31,10 +34,11 @@ namespace WEB.Models
             {
                 if (field.Required)
                 {
-                    if (field.FieldType == FieldType.Picklist)
+                    if (field.FieldType == FieldType.OptionList)
                     {
+                        var optionIds = db.Options.Where(o => o.OptionListId == field.OptionListId).Select(o => o.OptionId).ToHashSet();
 
-                        if (!OptionValues.Any(o => options.Where(opt => opt.FieldId == field.FieldId).Any(opt => opt.OptionId == o.OptionId)))
+                        if (!ItemOptions.Any(o => optionIds.Contains(o.OptionId)))
                         {
                             error = $"No value provided for {field.Name}";
                             return false;
@@ -42,7 +46,7 @@ namespace WEB.Models
                     }
                     else
                     {
-                        if (!FieldValues.Any(o => o.FieldId == field.FieldId))
+                        if (!ItemFields.Any(o => o.FieldId == field.FieldId))
                         {
                             error = $"No value provided for {field.Name}";
                             return false;
@@ -52,10 +56,10 @@ namespace WEB.Models
 
                 if (field.FieldType == FieldType.Text && field.IsUnique)
                 {
-                    var fieldValue = FieldValues.FirstOrDefault(o => o.FieldId == field.FieldId);
-                    if (fieldValue != null && !string.IsNullOrWhiteSpace(fieldValue.Value))
+                    var itemField = ItemFields.FirstOrDefault(o => o.FieldId == field.FieldId);
+                    if (itemField != null && !string.IsNullOrWhiteSpace(itemField.Value))
                     {
-                        if (db.FieldValues.Any(o => o.FieldId == field.FieldId && o.Value == fieldValue.Value && o.ItemId != fieldValue.ItemId))
+                        if (db.ItemFields.Any(o => o.FieldId == field.FieldId && o.Value == itemField.Value && o.ItemId != itemField.ItemId))
                         {
                             error = $"Value for {field.Name} is not unique";
                             return false;

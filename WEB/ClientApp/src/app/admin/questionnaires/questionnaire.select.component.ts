@@ -13,7 +13,8 @@ import { EntityType } from '../../common/models/entitytype.model';
         useExisting: forwardRef(() => QuestionnaireSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class QuestionnaireSelectComponent implements OnInit, ControlValueAccessor {
 

@@ -7,8 +7,8 @@ import { EntityPermission } from './entitypermission.model';
 import { Response } from './response.model';
 import { User } from './user.model';
 import { IHasFields } from './ihasfields.model';
-import { FieldValue } from './fieldvalue.model';
-import { OptionValue } from './optionvalue.model';
+import { ItemField } from './itemfield.model';
+import { ItemOption } from './itemoption.model';
 import { Roles } from './enums.model';
 
 export class Entity implements IHasFields {
@@ -28,8 +28,8 @@ export class Entity implements IHasFields {
     entityPermissions: EntityPermission[];
     responses: Response[];
     affiliatedUsers: User[];
-    fieldValues: FieldValue[] = [];
-    optionValues: OptionValue[] = [];
+    itemFields: ItemField[] = [];
+    itemOptions: ItemOption[] = [];
 
     constructor() {
         this.entityId = "00000000-0000-0000-0000-000000000000";

@@ -10,11 +10,12 @@ import { Enum, Enums } from '../../common/models/enums.model';
 import { BreadcrumbService } from '../../common/services/breadcrumb.service';
 import { ErrorService } from '../../common/services/error.service';
 import { DataReviewService } from '../../common/services/datareview.service';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @NgComponent({
     selector: 'datareview-edit',
-    templateUrl: './datareview.edit.component.html'
+    templateUrl: './datareview.edit.component.html',
+    standalone: false
 })
 export class DataReviewEditComponent implements OnInit {
 

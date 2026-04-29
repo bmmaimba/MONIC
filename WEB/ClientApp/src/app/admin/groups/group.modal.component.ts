@@ -8,12 +8,12 @@ import { ErrorService } from '../../common/services/error.service';
 
 @NgComponent({
     selector: 'group-modal',
-    templateUrl: './group.modal.component.html'
+    templateUrl: './group.modal.component.html',
+    standalone: false
 })
 export class GroupModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: Group[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: GroupSearchOptions = new GroupSearchOptions();
     public groups: Group[];
@@ -22,6 +22,7 @@ export class GroupModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<Group> = new EventEmitter<Group>();
     @Output() changes: EventEmitter<Group[]> = new EventEmitter<Group[]>();
+    @Input() selectedItems: Group[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

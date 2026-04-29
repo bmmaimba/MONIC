@@ -1,5 +1,6 @@
 import { SearchOptions, PagingHeaders } from './http.model';
 import { EntityType } from './entitytype.model';
+import { OptionList } from './optionlist.model';
 import { Subcategory } from './subcategory.model';
 import { User } from './user.model';
 import { AggregationTypes, DataTypes, DateTypes, IndicatorStatuses, IndicatorTypes } from './enums.model';
@@ -8,9 +9,10 @@ import { IndicatorPermission } from './indicatorpermission.model';
 import { LogFrameRowIndicator } from './logframerowindicator.model';
 import { Token } from './token.model';
 import { ComponentIndicator } from './componentindicator.model';
+import { IndicatorDate } from './indicatordate.model';
 import { IHasFields } from './ihasfields.model';
-import { FieldValue } from './fieldvalue.model';
-import { OptionValue } from './optionvalue.model';
+import { ItemField } from './itemfield.model';
+import { ItemOption } from './itemoption.model';
 
 export class Indicator implements IHasFields {
     indicatorId: string;
@@ -23,14 +25,27 @@ export class Indicator implements IHasFields {
     requiresSubmit: boolean;
     requiresVerify: boolean;
     requiresApprove: boolean;
+    lowerIsBetter: boolean;
+    useIndicatorDates: boolean;
     disableNote: boolean;
     entityTypeId: string;
     frequency: DateTypes;
     dateAggregationType: AggregationTypes;
     dataType: DataTypes;
+    optionListId: string;
     decimalPlaces: number;
+    minimum: number;
+    maximum: number;
+    shortName: string;
+    label: string;
+    color: string;
+    prefix: string;
+    suffix: string;
+    groupingIndicatorId: string;
     sortOrder: number;
     entityType: EntityType;
+    groupingIndicator: Indicator;
+    optionList: OptionList;
     subcategory: Subcategory;
 
     data: Datum[];
@@ -38,12 +53,19 @@ export class Indicator implements IHasFields {
     logFrameRowIndicators: LogFrameRowIndicator[];
     sourceTokens: Token[];
     componentIndicators: ComponentIndicator[];
+    indicatorDates: IndicatorDate[];
     tokens: Token[];
-    fieldValues: FieldValue[] = [];
-    optionValues: OptionValue[] = [];
+    groupIndicators: Indicator[];
+    itemFields: ItemField[] = [];
+    itemOptions: ItemOption[] = [];
 
     constructor() {
         this.indicatorId = "00000000-0000-0000-0000-000000000000";
+        this.indicatorType = IndicatorTypes.Collected;
+        this.frequency = DateTypes.Year;
+        this.dateAggregationType = AggregationTypes.MostRecent;
+        this.dataType = DataTypes.Number;
+        this.decimalPlaces = 0;
         this.requiresSubmit = true;
         this.requiresVerify = true;
         this.requiresApprove = true;
@@ -52,7 +74,9 @@ export class Indicator implements IHasFields {
         this.logFrameRowIndicators = [];
         this.sourceTokens = [];
         this.componentIndicators = [];
+        this.indicatorDates = [];
         this.tokens = [];
+        this.groupIndicators = [];
     }
 }
 
@@ -64,6 +88,7 @@ export class IndicatorSearchOptions extends SearchOptions {
     indicatorStatus: IndicatorStatuses;
     entityTypeId: string;
     frequency: DateTypes;
+    groupingIndicatorId: string;
     createdById: string;
 }
 

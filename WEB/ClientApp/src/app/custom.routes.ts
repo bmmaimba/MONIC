@@ -12,10 +12,11 @@ import { LogFramesComponent } from './logframe/logframes.component';
 import { LogFrameComponent } from './logframe/logframe.component';
 import { GanttsComponent } from './gantt/gantts.component';
 import { GanttComponent } from './gantt/gantt.component';
-import { ToolsComponent } from './tools/tools.component';
 import { QuestionnairesComponent } from './questionnaire/questionnaires.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { FolderComponent } from './folder/folder.component';
+import { ChartsComponent } from './charts/charts.component';
+import { ChartComponent } from './charts/chart.component';
 
 export const CustomRoutes: Route[] = [
     {
@@ -144,15 +145,26 @@ export const CustomRoutes: Route[] = [
         ]
     },
     {
-        path: 'tools',
+        path: 'charts',
         canActivate: [AccessGuard],
         canActivateChild: [AccessGuard],
-        component: ToolsComponent,
-        pathMatch: 'full',
+        component: ChartsComponent,
         data: {
-            breadcrumb: 'Tools',
-            menu: 'admin'
+            breadcrumb: 'Charts',
+            menu: 'home'
         },
+        children: [
+            {
+                path: ':chartId',
+                component: ChartComponent,
+                canActivate: [AccessGuard],
+                canActivateChild: [AccessGuard],
+                data: {
+                    breadcrumb: 'Chart',
+                    menu: 'home'
+                }
+            }
+        ]
     },
     {
         path: 'folder',

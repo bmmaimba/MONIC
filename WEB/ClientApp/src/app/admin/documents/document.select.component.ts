@@ -13,7 +13,8 @@ import { Item } from '../../common/models/item.model';
         useExisting: forwardRef(() => DocumentSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class DocumentSelectComponent implements OnInit, ControlValueAccessor {
 

@@ -6,7 +6,7 @@
     </div>
     
     <div class="modal-body p-5" [ngClass]="{ 'mb-6': !showFooter }">
-
+        
         <form (submit)="runSearch()" novalidate>
 
             <fieldset>
@@ -17,9 +17,10 @@
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && indicatorStatus!=undefined">Filtered by status: {{indicatorStatus.label}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.indicatorStatus=undefined;indicatorStatus=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && entityType!=undefined">Filtered by entity type: {{entityType.name}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.entityTypeId=undefined;entityType=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && frequency!=undefined">Filtered by frequency: {{frequency.label}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.frequency=undefined;frequency=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
+                <div class="alert alert-info alert-dismissible" *ngIf="showFilters && groupingIndicator!=undefined">Filtered by grouping indicator: {{groupingIndicator.name}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.groupingIndicatorId=undefined;groupingIndicator=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
                 <div class="alert alert-info alert-dismissible" *ngIf="showFilters && createdBy!=undefined">Filtered by created by: {{createdBy.fullName}}<button type="button" class="btn-close" data-bs-dismiss="alert" (click)="searchOptions.createdById=undefined;createdBy=undefined;runSearch();" *ngIf="canRemoveFilters"></button></div>
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -34,15 +35,19 @@
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!indicatorType">
-                        <select id="indicatorType" name="indicatorType" [(ngModel)]="searchOptions.indicatorType" #indicatorType="ngModel" class="form-select">
-                            <option *ngFor="let indicatorType of indicatorTypes" [ngValue]="indicatorType.value">{{ indicatorType.label }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="indicatorType" name="indicatorType" [(ngModel)]="searchOptions.indicatorType" #indicatorType="ngModel" class="form-select">
+                                <option *ngFor="let indicatorType of indicatorTypes" [ngValue]="indicatorType.value">{{ indicatorType.label }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!indicatorStatus">
-                        <select id="indicatorStatus" name="indicatorStatus" [(ngModel)]="searchOptions.indicatorStatus" #indicatorStatus="ngModel" class="form-select">
-                            <option *ngFor="let indicatorStatus of indicatorStatuses" [ngValue]="indicatorStatus.value">{{ indicatorStatus.label }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="indicatorStatus" name="indicatorStatus" [(ngModel)]="searchOptions.indicatorStatus" #indicatorStatus="ngModel" class="form-select">
+                                <option *ngFor="let indicatorStatus of indicatorStatuses" [ngValue]="indicatorStatus.value">{{ indicatorStatus.label }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!entityType">
@@ -52,9 +57,17 @@
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!frequency">
-                        <select id="frequency" name="frequency" [(ngModel)]="searchOptions.frequency" #frequency="ngModel" class="form-select">
-                            <option *ngFor="let dateType of dateTypes" [ngValue]="dateType.value">{{ dateType.label }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="frequency" name="frequency" [(ngModel)]="searchOptions.frequency" #frequency="ngModel" class="form-select">
+                                <option *ngFor="let dateType of dateTypes" [ngValue]="dateType.value">{{ dateType.label }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!groupingIndicator">
+                        <div class="form-group">
+                            <indicator-select id="groupingIndicatorId" name="groupingIndicatorId" [(ngModel)]="searchOptions.groupingIndicatorId"></indicator-select>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-6 col-lg-4" *ngIf="!createdBy">

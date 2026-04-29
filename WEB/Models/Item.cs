@@ -13,9 +13,9 @@ namespace WEB.Models
         [Required]
         public ItemType ItemType { get; set; }
 
-        public virtual ICollection<FieldValue> FieldValues { get; set; } = new List<FieldValue>();
+        public virtual ICollection<ItemField> ItemFields { get; set; } = new List<ItemField>();
 
-        public virtual ICollection<OptionValue> OptionValues { get; set; } = new List<OptionValue>();
+        public virtual ICollection<ItemOption> ItemOptions { get; set; } = new List<ItemOption>();
 
         public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 

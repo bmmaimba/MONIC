@@ -15,7 +15,8 @@ import { User } from '../../common/models/user.model';
         useExisting: forwardRef(() => IndicatorSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class IndicatorSelectComponent implements OnInit, ControlValueAccessor {
 
@@ -31,6 +32,7 @@ export class IndicatorSelectComponent implements OnInit, ControlValueAccessor {
     @Input() indicatorStatus: Enum;
     @Input() entityType: EntityType;
     @Input() frequency: Enum;
+    @Input() groupingIndicator: Indicator;
     @Input() createdBy: User;
 
     disabled = false;

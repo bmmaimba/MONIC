@@ -29,11 +29,13 @@ import { ItemComponent } from '../../common/components/item.component';
 import { AppService } from '../../common/services/app.service';
 import { DocumentService } from '../../common/services/document.service';
 import { Item } from '../../common/models/item.model';
+import { FieldValueMapperService } from '../../common/services/field-value-mapper.service';
 
 @NgComponent({
     selector: 'component-edit',
     templateUrl: './component.edit.component.html',
-    animations: [FadeThenShrink]
+    animations: [FadeThenShrink],
+    standalone: false
 })
 export class ComponentEditComponent extends ItemComponent implements OnInit, OnDestroy {
 
@@ -84,9 +86,10 @@ export class ComponentEditComponent extends ItemComponent implements OnInit, OnD
         protected errorService: ErrorService,
         protected cdref: ChangeDetectorRef,
         protected appService: AppService,
-        protected documentService: DocumentService
+        protected documentService: DocumentService,
+        protected fieldValueMapper: FieldValueMapperService
     ) {
-        super(appService, errorService, cdref, documentService, modalService);
+        super(appService, errorService, cdref, documentService, modalService, fieldValueMapper);
     }
 
     ngOnInit(): void {

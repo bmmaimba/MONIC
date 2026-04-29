@@ -12,7 +12,8 @@ import { OptionService } from '../../common/services/option.service';
 
 @NgComponent({
     selector: 'option-edit',
-    templateUrl: './option.edit.component.html'
+    templateUrl: './option.edit.component.html',
+    standalone: false
 })
 export class OptionEditComponent implements OnInit {
 
@@ -35,7 +36,7 @@ export class OptionEditComponent implements OnInit {
         this.route.params.subscribe(params => {
 
             const optionId = params["optionId"];
-            this.option.fieldId = this.route.snapshot.parent.params.fieldId;
+            this.option.optionListId = this.route.snapshot.parent.params.optionListId;
             this.isNew = optionId === "add";
 
             if (!this.isNew) {

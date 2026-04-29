@@ -14,7 +14,8 @@ import { User } from '../../common/models/user.model';
         useExisting: forwardRef(() => FolderContentSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class FolderContentSelectComponent implements OnInit, ControlValueAccessor {
 

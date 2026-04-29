@@ -21,20 +21,20 @@ namespace WEB.Controllers
 
             if (searchOptions.IncludeParents)
             {
-                results = results.Include(o => o.Field);
+                results = results.Include(o => o.OptionList);
             }
 
             if (searchOptions.IncludeChildren)
             {
-                results = results.Include(o => o.OptionValues);
+                results = results.Include(o => o.ItemOptions);
             }
 
             if (!string.IsNullOrWhiteSpace(searchOptions.q))
                 results = results.Where(o => o.Name.Contains(searchOptions.q));
 
-            if (searchOptions.FieldId.HasValue) results = results.Where(o => o.FieldId == searchOptions.FieldId);
+            if (searchOptions.OptionListId.HasValue) results = results.Where(o => o.OptionListId == searchOptions.OptionListId);
 
-            results = results.OrderBy(o => o.Field.SortOrder).ThenBy(o => o.SortOrder).ThenBy(o => o.Name);
+            results = results.OrderBy(o => o.OptionList.Name).ThenBy(o => o.SortOrder).ThenBy(o => o.Name);
 
             return Ok((await GetPaginatedResponse(results, searchOptions)).Select(o => ModelFactory.Create(o, searchOptions.IncludeParents, searchOptions.IncludeChildren)));
         }
@@ -43,7 +43,7 @@ namespace WEB.Controllers
         public async Task<IActionResult> Get(Guid optionId)
         {
             var option = await db.Options
-                .Include(o => o.Field)
+                .Include(o => o.OptionList)
                 .FirstOrDefaultAsync(o => o.OptionId == optionId);
 
             if (option == null)
@@ -59,8 +59,11 @@ namespace WEB.Controllers
 
             if (optionDTO.OptionId != optionId) return BadRequest("Id mismatch");
 
-            if (await db.Options.AnyAsync(o => o.FieldId == optionDTO.FieldId && o.Name == optionDTO.Name && o.OptionId != optionDTO.OptionId))
-                return BadRequest("Name already exists on this Field.");
+            if (await db.Options.AnyAsync(o => o.OptionListId == optionDTO.OptionListId && o.Name == optionDTO.Name && o.OptionId != optionDTO.OptionId))
+                return BadRequest("Name already exists on this Option List.");
+
+            if (optionDTO.Value.HasValue && await db.Options.AnyAsync(o => o.OptionListId == optionDTO.OptionListId && o.Value == optionDTO.Value && o.OptionId != optionDTO.OptionId))
+                return BadRequest("Value already exists on this Option List.");
 
             var isNew = optionDTO.OptionId == Guid.Empty;
 
@@ -69,7 +72,7 @@ namespace WEB.Controllers
             {
                 option = new Option();
 
-                optionDTO.SortOrder = (await db.Options.Where(o => o.FieldId == optionDTO.FieldId).MaxAsync(o => (int?)o.SortOrder) ?? 0) + 1;
+                optionDTO.SortOrder = (await db.Options.Where(o => o.OptionListId == optionDTO.OptionListId).MaxAsync(o => (int?)o.SortOrder) ?? 0) + 1;
 
                 db.Entry(option).State = EntityState.Added;
             }
@@ -102,7 +105,7 @@ namespace WEB.Controllers
 
             using (var transactionScope = Utilities.General.CreateTransactionScope())
             {
-                await db.OptionValues.Where(o => o.OptionId == option.OptionId).ExecuteDeleteAsync();
+                await db.ItemOptions.Where(o => o.OptionId == option.OptionId).ExecuteDeleteAsync();
 
                 db.Entry(option).State = EntityState.Deleted;
 
@@ -115,10 +118,10 @@ namespace WEB.Controllers
         }
 
         [HttpPost("sort"), AuthorizeRoles(Roles.Administrator)]
-        public async Task<IActionResult> Sort([FromQuery] Guid fieldId, [FromBody] Guid[] sortedIds)
+        public async Task<IActionResult> Sort([FromQuery] Guid optionListId, [FromBody] Guid[] sortedIds)
         {
             var options = await db.Options
-                .Where(o => o.FieldId == fieldId)
+                .Where(o => o.OptionListId == optionListId)
                 .ToListAsync();
             if (options.Count != sortedIds.Length) return BadRequest("Some of the options could not be found");
 

@@ -14,7 +14,8 @@ import { Component } from '../../common/models/component.model';
         useExisting: forwardRef(() => RelationshipSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class RelationshipSelectComponent implements OnInit, ControlValueAccessor {
 

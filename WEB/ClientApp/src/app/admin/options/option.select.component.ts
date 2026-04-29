@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OptionModalComponent } from './option.modal.component';
 import { Option } from '../../common/models/option.model';
 import { Enum } from '../../common/models/enums.model';
-import { Field } from '../../common/models/field.model';
+import { OptionList } from '../../common/models/optionlist.model';
 
 @NgComponent({
     selector: 'option-select',
@@ -13,7 +13,8 @@ import { Field } from '../../common/models/field.model';
         useExisting: forwardRef(() => OptionSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class OptionSelectComponent implements OnInit, ControlValueAccessor {
 
@@ -24,7 +25,7 @@ export class OptionSelectComponent implements OnInit, ControlValueAccessor {
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;
-    @Input() field: Field;
+    @Input() optionList: OptionList;
 
     disabled = false;
     placeholder = this.multiple ? "Select options" : "Select an option";

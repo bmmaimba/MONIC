@@ -16,7 +16,7 @@
 
             <fieldset class="group">
 
-                <div class="row g-3">
+                <div class="row gx-3">
 
                     <div class="col-sm-6 col-md-4">
                         <div class="form-group" [ngClass]="{ 'is-invalid': name.invalid }">
@@ -123,6 +123,56 @@
                                             <option [ngValue]="undefined">Indicator: Any</option>
                                             <option [ngValue]="true">Indicator: Yes</option>
                                             <option [ngValue]="false">Indicator: No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                                    <div class="form-group">
+                                        <select id="component" name="component" [(ngModel)]="fieldsSearchOptions.component" #component="ngModel" class="form-select">
+                                            <option [ngValue]="undefined">Component: Any</option>
+                                            <option [ngValue]="true">Component: Yes</option>
+                                            <option [ngValue]="false">Component: No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                                    <div class="form-group">
+                                        <select id="relationship" name="relationship" [(ngModel)]="fieldsSearchOptions.relationship" #relationship="ngModel" class="form-select">
+                                            <option [ngValue]="undefined">Relationship: Any</option>
+                                            <option [ngValue]="true">Relationship: Yes</option>
+                                            <option [ngValue]="false">Relationship: No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                                    <div class="form-group">
+                                        <select id="folder" name="folder" [(ngModel)]="fieldsSearchOptions.folder" #folder="ngModel" class="form-select">
+                                            <option [ngValue]="undefined">Folder: Any</option>
+                                            <option [ngValue]="true">Folder: Yes</option>
+                                            <option [ngValue]="false">Folder: No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                                    <div class="form-group">
+                                        <select id="category" name="category" [(ngModel)]="fieldsSearchOptions.category" #category="ngModel" class="form-select">
+                                            <option [ngValue]="undefined">Category: Any</option>
+                                            <option [ngValue]="true">Category: Yes</option>
+                                            <option [ngValue]="false">Category: No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                                    <div class="form-group">
+                                        <select id="subcategory" name="subcategory" [(ngModel)]="fieldsSearchOptions.subcategory" #subcategory="ngModel" class="form-select">
+                                            <option [ngValue]="undefined">Subcategory: Any</option>
+                                            <option [ngValue]="true">Subcategory: Yes</option>
+                                            <option [ngValue]="false">Subcategory: No</option>
                                         </select>
                                     </div>
                                 </div>

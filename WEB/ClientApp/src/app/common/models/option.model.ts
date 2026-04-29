@@ -1,25 +1,27 @@
 import { SearchOptions, PagingHeaders } from './http.model';
-import { Field } from './field.model';
-import { OptionValue } from './optionvalue.model';
+import { OptionList } from './optionlist.model';
+import { ItemOption } from './itemoption.model';
 
 export class Option {
     optionId: string;
-    fieldId: string;
+    optionListId: string;
     name: string;
+    value: number;
+    color: string;
     sortOrder: number;
-    field: Field;
+    optionList: OptionList;
 
-    optionValues: OptionValue[];
+    itemOptions: ItemOption[];
 
     constructor() {
         this.optionId = "00000000-0000-0000-0000-000000000000";
-        this.optionValues = [];
+        this.itemOptions = [];
     }
 }
 
 export class OptionSearchOptions extends SearchOptions {
     q: string;
-    fieldId: string;
+    optionListId: string;
 }
 
 export class OptionSearchResponse {

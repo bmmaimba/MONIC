@@ -81,8 +81,8 @@ namespace WEB.Controllers
             else if (!CurrentUser.HasEntityPermission(entity.EntityId)) return Forbid();
 
             var item = await db.Items
-               .Include(o => o.FieldValues)
-               .Include(o => o.OptionValues)
+               .Include(o => o.ItemFields)
+               .Include(o => o.ItemOptions)
                .FirstOrDefaultAsync(o => o.ItemId == entityId);
 
             var entityDTO = ModelFactory.Create(entity, true, false, item);
@@ -137,14 +137,17 @@ namespace WEB.Controllers
                 if (entity == null)
                     return NotFound();
 
+                if (!await db.Items.AnyAsync(o => o.ItemId == entity.EntityId))
+                    db.Entry(new Item { ItemId = entity.EntityId, ItemType = ItemType.Entity }).State = EntityState.Added;
+
                 db.Entry(entity).State = EntityState.Modified;
             }
 
-            await Permissions.SetEntityPermissionsAsync(db, AppSettings, entityDTO.OrganisationId, entity.EntityId);
+            await Permissions.SetEntityPermissionsAsync(db, entityDTO.OrganisationId, entity.EntityId);
 
             ModelFactory.Hydrate(entity, entityDTO, isNew);
 
-            await ItemFunctions.HydrateFieldsAsync(db, entity.EntityId, entityDTO.FieldValues, entityDTO.OptionValues);
+            await ItemFunctions.HydrateFieldsAsync(db, entity.EntityId, entityDTO.ItemFields, entityDTO.ItemOptions);
 
             if (!CurrentUser.IsInRole(Roles.Administrator)) entity.OrganisationId = CurrentUser.OrganisationId.Value;
 
@@ -181,9 +184,10 @@ namespace WEB.Controllers
             {
                 await db.EntityPermissions.Where(o => o.EntityId == entity.EntityId).ExecuteDeleteAsync();
 
+                ItemFunctions.DeleteDocuments(db, entityId);
                 ItemFunctions.DeleteFields(db, entityId, true);
 
-            db.Entry(entity).State = EntityState.Deleted;
+                db.Entry(entity).State = EntityState.Deleted;
 
                 await db.SaveChangesAsync();
 

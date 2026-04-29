@@ -25,7 +25,8 @@ export enum ComponentTypes {
 export enum DataTypes {
     Currency,
     Number,
-    Percent
+    Percent,
+    OptionList
 }
 
 export enum DateTypes {
@@ -37,7 +38,7 @@ export enum DateTypes {
 export enum FieldTypes {
     Text,
     Date,
-    Picklist,
+    OptionList,
     File,
     YesNo
 }
@@ -49,7 +50,8 @@ export enum IndicatorStatuses {
 
 export enum IndicatorTypes {
     Collected,
-    Calculated
+    Calculated,
+    Group
 }
 
 export enum ItemTypes {
@@ -59,7 +61,9 @@ export enum ItemTypes {
     Component,
     Relationship,
     Answer,
-    Folder
+    Folder,
+    Category,
+    Subcategory
 }
 
 export enum LogFrameRowTypes {
@@ -185,7 +189,8 @@ export class Enums {
      static DataTypes: Enum[] = [
         { value: 0, name: 'Currency', label: 'Currency' },
         { value: 1, name: 'Number', label: 'Number' },
-        { value: 2, name: 'Percent', label: 'Percent' }
+        { value: 2, name: 'Percent', label: 'Percent' },
+        { value: 3, name: 'OptionList', label: 'Option List' }
      ]
 
      static DateTypes: Enum[] = [
@@ -197,7 +202,7 @@ export class Enums {
      static FieldTypes: Enum[] = [
         { value: 0, name: 'Text', label: 'Text' },
         { value: 1, name: 'Date', label: 'Date' },
-        { value: 2, name: 'Picklist', label: 'Picklist' },
+        { value: 2, name: 'OptionList', label: 'Option List' },
         { value: 3, name: 'File', label: 'File' },
         { value: 4, name: 'YesNo', label: 'Yes/No' }
      ]
@@ -209,7 +214,8 @@ export class Enums {
 
      static IndicatorTypes: Enum[] = [
         { value: 0, name: 'Collected', label: 'Collected' },
-        { value: 1, name: 'Calculated', label: 'Calculated' }
+        { value: 1, name: 'Calculated', label: 'Calculated' },
+        { value: 2, name: 'Group', label: 'Group' }
      ]
 
      static ItemTypes: Enum[] = [
@@ -219,7 +225,9 @@ export class Enums {
         { value: 3, name: 'Component', label: 'Component' },
         { value: 4, name: 'Relationship', label: 'Relationship' },
         { value: 5, name: 'Answer', label: 'Answer' },
-        { value: 6, name: 'Folder', label: 'Folder' }
+        { value: 6, name: 'Folder', label: 'Folder' },
+        { value: 7, name: 'Category', label: 'Category' },
+        { value: 8, name: 'Subcategory', label: 'Subcategory' }
      ]
 
      static LogFrameRowTypes: Enum[] = [

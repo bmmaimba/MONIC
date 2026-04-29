@@ -17,6 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
     selector: 'folder',
     templateUrl: './folder.component.html',
+    standalone: false
 })
 export class FolderComponent implements OnInit, OnDestroy {
 
@@ -117,7 +118,7 @@ export class FolderComponent implements OnInit, OnDestroy {
                 next: folderContent => {
                     this.modalService.open(folderContentView, { size: 'xl', centered: true, scrollable: false }).result.then(
                         () => this.selectedFolderContent,
-                        () => this.selectedFolderContent = undefined
+                        () => { this.selectedFolderContent = undefined; }
                     );
                     setTimeout(() => this.selectedFolderContent = folderContent, 500);
                 },

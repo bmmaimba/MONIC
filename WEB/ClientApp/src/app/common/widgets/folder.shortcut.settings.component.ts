@@ -2,7 +2,7 @@ import { Component as NgComponent, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { Date } from '../models/date.model';
+import { AppDate } from '../models/date.model';
 import { Enums, WidgetTypes } from '../models/enums.model';
 import { Indicator } from '../models/indicator.model';
 import { FolderShortcutSettings, IndicatorBarChartSettings } from '../models/widget.model';
@@ -14,7 +14,8 @@ import { IndicatorService } from '../services/indicator.service';
 
 @NgComponent({
     selector: 'app-folder-shortcut-settings',
-    templateUrl: './folder.shortcut.settings.component.html'
+    templateUrl: './folder.shortcut.settings.component.html',
+    standalone: false
 })
 export class FolderShortcutSettingsComponent implements OnInit {
 

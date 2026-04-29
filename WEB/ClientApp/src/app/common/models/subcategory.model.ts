@@ -1,17 +1,22 @@
 import { SearchOptions, PagingHeaders } from './http.model';
 import { Category } from './category.model';
 import { Indicator } from './indicator.model';
+import { IHasFields } from './ihasfields.model';
+import { ItemField } from './itemfield.model';
+import { ItemOption } from './itemoption.model';
 
-export class Subcategory {
+export class Subcategory implements IHasFields {
     subcategoryId: string;
     categoryId: string;
-    code: string;
     name: string;
+    code: string;
     dataEntrySubtotal: boolean;
     sortOrder: number;
     category: Category;
 
     indicators: Indicator[];
+    itemFields: ItemField[] = [];
+    itemOptions: ItemOption[] = [];
 
     constructor() {
         this.subcategoryId = "00000000-0000-0000-0000-000000000000";

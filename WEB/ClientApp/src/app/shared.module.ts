@@ -17,7 +17,6 @@ import { PageTitleComponent } from './common/components/pagetitle.component';
 import { SortIconComponent } from './common/components/sorticon.component';
 import { AppHasRoleDirective } from './common/directives/apphasrole';
 import { AppFileInputDirective } from './common/directives/appfileinput';
-import { SpyOnDirective } from './common/scroll-spy/spy-on.directive';
 import { BooleanPipe } from './common/pipes/booleanpipe';
 import { MomentPipe } from './common/pipes/momentpipe';
 import { FileSizePipe } from './common/pipes/filesizepipe';
@@ -26,6 +25,8 @@ import { AnswerModalComponent } from './admin/answers/answer.modal.component';
 import { CategorySelectComponent } from './admin/categories/category.select.component';
 import { CategoryModalComponent } from './admin/categories/category.modal.component';
 import { CategorySortComponent } from './admin/categories/category.sort.component';
+import { ChartSelectComponent } from './admin/charts/chart.select.component';
+import { ChartModalComponent } from './admin/charts/chart.modal.component';
 import { ComponentSelectComponent } from './admin/components/component.select.component';
 import { ComponentModalComponent } from './admin/components/component.modal.component';
 import { ComponentSortComponent } from './admin/components/component.sort.component';
@@ -67,6 +68,8 @@ import { MilestoneSortComponent } from './admin/milestones/milestone.sort.compon
 import { OptionSelectComponent } from './admin/options/option.select.component';
 import { OptionModalComponent } from './admin/options/option.modal.component';
 import { OptionSortComponent } from './admin/options/option.sort.component';
+import { OptionListSelectComponent } from './admin/optionlists/optionlist.select.component';
+import { OptionListModalComponent } from './admin/optionlists/optionlist.modal.component';
 import { OrganisationSelectComponent } from './admin/organisations/organisation.select.component';
 import { OrganisationModalComponent } from './admin/organisations/organisation.modal.component';
 import { ProjectSelectComponent } from './admin/projects/project.select.component';
@@ -106,9 +109,9 @@ import { SurveyComponent } from './common/components/survey/survey.component';
 import { ParagraphsPipe } from './common/pipes/paragraphspipe';
 import { QuestionnaireExportComponent } from './admin/questionnaires/questionnaire.export.component';
 import { QuestionnaireDownloadComponent } from './admin/questionnaires/questionnaire.download.component';
-import { QuillModule } from 'ngx-quill';
 import { QuestionnaireGenerateSummariesComponent } from './admin/questionnaires/questionnaire.generate.summaries.component';
 import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
     imports: [
@@ -148,12 +151,13 @@ import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
         QuestionnaireGenerateSummariesComponent,
         SurveyComponent,
         FrequencyAdverb,
-        SpyOnDirective,
         AnswerSelectComponent,
         AnswerModalComponent,
         CategorySelectComponent,
         CategoryModalComponent,
         CategorySortComponent,
+        ChartSelectComponent,
+        ChartModalComponent,
         ComponentSelectComponent,
         ComponentModalComponent,
         ComponentSortComponent,
@@ -195,6 +199,8 @@ import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
         OptionSelectComponent,
         OptionModalComponent,
         OptionSortComponent,
+        OptionListSelectComponent,
+        OptionListModalComponent,
         OrganisationSelectComponent,
         OrganisationModalComponent,
         ProjectSelectComponent,
@@ -254,12 +260,13 @@ import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
         QuestionnaireGenerateSummariesComponent,
         SurveyComponent,
         FrequencyAdverb,
-        SpyOnDirective,
         AnswerSelectComponent,
         AnswerModalComponent,
         CategorySelectComponent,
         CategoryModalComponent,
         CategorySortComponent,
+        ChartSelectComponent,
+        ChartModalComponent,
         ComponentSelectComponent,
         ComponentModalComponent,
         ComponentSortComponent,
@@ -301,6 +308,8 @@ import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
         OptionSelectComponent,
         OptionModalComponent,
         OptionSortComponent,
+        OptionListSelectComponent,
+        OptionListModalComponent,
         OrganisationSelectComponent,
         OrganisationModalComponent,
         ProjectSelectComponent,
@@ -330,7 +339,8 @@ import { FrequencyAdverb } from './common/pipes/frequencyadverbpipe';
         TheoryOfChangeSelectComponent,
         TheoryOfChangeModalComponent,
         UserSelectComponent,
-        UserModalComponent
+        UserModalComponent,
+        QuillModule
     ]
 })
 export class SharedModule { }

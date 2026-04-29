@@ -16,6 +16,8 @@ namespace WEB.Models
         [Required]
         public FieldType FieldType { get; set; }
 
+        public Guid? OptionListId { get; set; }
+
         [Required]
         public bool Organisation { get; set; }
 
@@ -33,6 +35,12 @@ namespace WEB.Models
 
         [Required]
         public bool Folder { get; set; }
+
+        [Required]
+        public bool Category { get; set; }
+
+        [Required]
+        public bool Subcategory { get; set; }
 
         [Required]
         public bool Required { get; set; }
@@ -69,9 +77,11 @@ namespace WEB.Models
 
         public GroupDTO Group { get; set; }
 
-        public virtual List<FieldValueDTO> FieldValues { get; set; } = new List<FieldValueDTO>();
+        public OptionListDTO OptionList { get; set; }
 
-        public virtual List<OptionDTO> Options { get; set; } = new List<OptionDTO>();
+        public virtual List<ItemFieldDTO> ItemFields { get; set; } = new List<ItemFieldDTO>();
+
+        public virtual List<ItemOptionDTO> ItemOptions { get; set; } = new List<ItemOptionDTO>();
 
     }
 
@@ -86,12 +96,15 @@ namespace WEB.Models
             fieldDTO.FieldId = field.FieldId;
             fieldDTO.Name = field.Name;
             fieldDTO.FieldType = field.FieldType;
+            fieldDTO.OptionListId = field.OptionListId;
             fieldDTO.Organisation = field.Organisation;
             fieldDTO.Entity = field.Entity;
             fieldDTO.Indicator = field.Indicator;
             fieldDTO.Component = field.Component;
             fieldDTO.Relationship = field.Relationship;
             fieldDTO.Folder = field.Folder;
+            fieldDTO.Category = field.Category;
+            fieldDTO.Subcategory = field.Subcategory;
             fieldDTO.Required = field.Required;
             fieldDTO.IsUnique = field.IsUnique;
             fieldDTO.Size = field.Size;
@@ -108,17 +121,16 @@ namespace WEB.Models
             if (includeParents)
             {
                 fieldDTO.Group = Create(field.Group);
+                fieldDTO.OptionList = Create(field.OptionList);
             }
 
             if (includeChildren)
             {
-                foreach (var fieldValue in field.FieldValues)
-                    fieldDTO.FieldValues.Add(Create(fieldValue));
-                foreach (var option in field.Options)
-                    fieldDTO.Options.Add(Create(option));
+                foreach (var itemField in field.ItemFields)
+                    fieldDTO.ItemFields.Add(Create(itemField));
+                foreach (var itemOption in field.ItemOptions)
+                    fieldDTO.ItemOptions.Add(Create(itemOption));
             }
-
-            fieldDTO.Options = field.Options.Select(o => Create(o, false)).ToList();
 
             return fieldDTO;
         }
@@ -127,12 +139,15 @@ namespace WEB.Models
         {
             field.Name = fieldDTO.Name;
             if (isNew) field.FieldType = fieldDTO.FieldType;
+            field.OptionListId = fieldDTO.OptionListId;
             field.Organisation = fieldDTO.Organisation;
             field.Entity = fieldDTO.Entity;
             field.Indicator = fieldDTO.Indicator;
             field.Component = fieldDTO.Component;
             field.Relationship = fieldDTO.Relationship;
             field.Folder = fieldDTO.Folder;
+            field.Category = fieldDTO.Category;
+            field.Subcategory = fieldDTO.Subcategory;
             field.Required = fieldDTO.Required;
             field.IsUnique = fieldDTO.IsUnique;
             field.Size = fieldDTO.Size;

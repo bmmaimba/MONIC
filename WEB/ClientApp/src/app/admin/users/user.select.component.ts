@@ -14,7 +14,8 @@ import { Organisation } from '../../common/models/organisation.model';
         useExisting: forwardRef(() => UserSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class UserSelectComponent implements OnInit, ControlValueAccessor {
 

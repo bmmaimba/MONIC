@@ -10,14 +10,14 @@ namespace WEB.Reports.Excel
 {
     public class QuestionnaireExport : ExcelReports
     {
-        private Questionnaire questionnaire;
+        private readonly Questionnaire questionnaire;
         private Guid[] entityIds;
-        private Guid[] dateIds;
-        private Guid[] fieldIds;
-        private bool useOptionValues;
-        private bool useOptionColors;
-        private bool includeSummaries;
-        private bool includeCharts;
+        private readonly Guid[] dateIds;
+        private readonly Guid[] fieldIds;
+        private readonly bool useOptionValues;
+        private readonly bool useOptionColors;
+        private readonly bool includeSummaries;
+        private readonly bool includeCharts;
 
         public QuestionnaireExport(ApplicationDbContext db, AppSettings appSettings, Questionnaire questionnaire, Guid[] entityIds, Guid[] dateIds, Guid[] fieldIds, bool includeSummaries, bool useOptionValues, bool useOptionColors, bool includeCharts)
             : base(db, appSettings)
@@ -80,7 +80,7 @@ namespace WEB.Reports.Excel
 
             var responseIds = responses.Select(o => o.ResponseId).ToArray();
             // if loading all entities, specify the ids exactly here (for use with fields)
-            if (!entityIds.Any()) entityIds = responses.Select(o => o.EntityId).ToArray();
+            if (entityIds.Length == 0) entityIds = responses.Select(o => o.EntityId).ToArray();
 
             var answers = await db.Answers
                 .Include(o => o.AnswerOptions)
@@ -107,32 +107,34 @@ namespace WEB.Reports.Excel
                 ? await db.QuestionSummaries
                     .Where(o => (!dateIds.Any() || dateIds.Contains(o.DateId)) && o.Question.Section.QuestionnaireId == questionnaire.QuestionnaireId)
                     .ToListAsync()
-                : new List<QuestionSummary>();
+                : [];
 
             var useAverageRow = questions.Any(o => o.QuestionType == QuestionType.OptionList && o.OptionListType != OptionListType.Checkboxes && optionGroups[o.QuestionOptionGroupId.Value].QuestionOptions.Any() && optionGroups[o.QuestionOptionGroupId.Value].QuestionOptions.All(qo => qo.Value.HasValue));
 
             var fields = await db.Fields
-                .Include(o => o.Options)
-                .Where(o => fieldIds.Contains(o.FieldId) && o.Entity).ToListAsync();
+                .Where(o => fieldIds.Contains(o.FieldId) && o.Entity)
+                .ToListAsync();
 
-            var fieldValues = await db.FieldValues
+            var options = await db.Options
+                .ToListAsync();
+
+            var itemFields = await db.ItemFields
                 .Where(o => entityIds.Contains(o.ItemId))
                 .ToListAsync();
 
-            // Dictionary<fieldId, Dictionary<entityId, fieldValue>>
-            var fieldValueLookup = fieldValues
+            var itemFieldLookup = itemFields
                 .GroupBy(o => o.FieldId)
                 .ToDictionary(o => o.Key, o => o.ToDictionary(x => x.ItemId));
 
-            var optionValues = await db.OptionValues
+            var itemOptions = await db.ItemOptions
                 .Include(o => o.Option)
                 .Where(o => entityIds.Contains(o.ItemId))
                 .ToListAsync();
 
             // Dictionary<fieldId, Dictionary<entityId, List<optionValue>>>
-            var optionValueLookup = optionValues
-                .GroupBy(o => o.Option.FieldId)
-                .ToDictionary(o => o.Key, o => o.GroupBy(x => x.ItemId).ToDictionary(x => x.Key, y => y.ToList()));
+            //var optionValueLookup = itemOptions
+            //    .GroupBy(o => o.Option.FieldId)
+            //    .ToDictionary(o => o.Key, o => o.GroupBy(x => x.ItemId).ToDictionary(x => x.Key, y => y.ToList()));
             #endregion
 
             byte[] bytes;
@@ -155,7 +157,7 @@ namespace WEB.Reports.Excel
                 foreach (var field in fields)
                 {
                     // todo: will need a col for each option...
-                    if (field.FieldType == FieldType.Picklist && field.Multiple) throw new HandledException("Multiple choice fields have not been implemented in the export");
+                    if (field.FieldType == FieldType.OptionList && field.Multiple) throw new HandledException("Multiple choice fields have not been implemented in the export");
                     ws.Cells[4, col++].Value = field.Name;
                 }
                 ws.Cells[4, col++].Value = "Created";
@@ -223,13 +225,18 @@ namespace WEB.Reports.Excel
                     foreach (var field in fields)
                     {
                         if (field.FieldType == FieldType.Text)
-                            ws.Cells[row, col++].Value = fieldValueLookup.GetValueOrDefault(field.FieldId)?.GetValueOrDefault(response.EntityId)?.Value ?? null;
-                        else if (field.FieldType == FieldType.Picklist)
+                            ws.Cells[row, col++].Value = itemFieldLookup.GetValueOrDefault(field.FieldId)?.GetValueOrDefault(response.EntityId)?.Value ?? null;
+                        else if (field.FieldType == FieldType.OptionList)
                         {
-                            // todo: will need a col for each option...
+                            // todo: for multiple, will need a column for each option...
                             if (field.Multiple) throw new Exception("Not implemented");
-                            var optionValue = optionValueLookup.GetValueOrDefault(field.FieldId)?.GetValueOrDefault(response.EntityId)?.Single();
-                            ws.Cells[row, col++].Value = optionValue == null ? null : field.Options.Single(o => o.OptionId == optionValue.OptionId).Name;
+
+                            // not the most efficient way to do this...
+                            var optionsForThisField = options.Where(o => o.OptionListId == field.OptionListId).ToList();
+
+                            var selectedOptionForThisEntity = optionsForThisField.SingleOrDefault(o => itemOptions.Any(io => io.ItemId == response.EntityId));
+
+                            ws.Cells[row, col++].Value = selectedOptionForThisEntity == null ? null : selectedOptionForThisEntity.Name;
                         }
                         else
                             throw new NotImplementedException();

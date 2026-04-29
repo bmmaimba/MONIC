@@ -8,12 +8,12 @@ import { ErrorService } from '../../common/services/error.service';
 
 @NgComponent({
     selector: 'log-frame-modal',
-    templateUrl: './logframe.modal.component.html'
+    templateUrl: './logframe.modal.component.html',
+    standalone: false
 })
 export class LogFrameModalComponent implements OnInit {
 
     public modal: NgbModalRef;
-    public selectedItems: LogFrame[] = [];
     public headers: PagingHeaders = new PagingHeaders();
     public searchOptions: LogFrameSearchOptions = new LogFrameSearchOptions();
     public logFrames: LogFrame[];
@@ -22,6 +22,7 @@ export class LogFrameModalComponent implements OnInit {
     @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<LogFrame> = new EventEmitter<LogFrame>();
     @Output() changes: EventEmitter<LogFrame[]> = new EventEmitter<LogFrame[]>();
+    @Input() selectedItems: LogFrame[] = [];
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;

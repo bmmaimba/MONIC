@@ -4,32 +4,32 @@ namespace WEB.Models
 {
     public static class ItemFunctions
     {
-        public static async System.Threading.Tasks.Task HydrateFieldsAsync(ApplicationDbContext db, Guid itemId, ICollection<FieldValueDTO> newFieldValues, ICollection<OptionValueDTO> newOptionValues)
+        public static async System.Threading.Tasks.Task HydrateFieldsAsync(ApplicationDbContext db, Guid itemId, ICollection<ItemFieldDTO> itemFields, ICollection<ItemOptionDTO> itemOptions)
         {
             DeleteFields(db, itemId);
 
             var fields = await db.Fields.ToDictionaryAsync(o => o.FieldId);
 
-            foreach (var fieldValue in newFieldValues)
+            foreach (var itemField in itemFields)
             {
-                var field = fields[fieldValue.FieldId];
+                var field = fields[itemField.FieldId];
                 if (field.FieldType != FieldType.Date && field.FieldType != FieldType.Text && field.FieldType != FieldType.YesNo) continue;
-                if (string.IsNullOrWhiteSpace(fieldValue.Value)) continue;
+                if (string.IsNullOrWhiteSpace(itemField.Value)) continue;
 
                 // validation checks here: minlength, maxlength, unique
                 //if(field.MaxLength)
 
-                db.Entry(new FieldValue { ItemId = itemId, FieldId = fieldValue.FieldId, Value = fieldValue.Value }).State = EntityState.Added;
+                db.Entry(new ItemField { ItemId = itemId, FieldId = itemField.FieldId, Value = itemField.Value }).State = EntityState.Added;
             }
 
-            foreach (var optionValue in newOptionValues)
+            foreach (var itemOption in itemOptions)
             {
                 // this is the 'unselect' option set in the authorization.profile controller
-                if (optionValue.OptionId == Guid.Empty) continue;
+                if (itemOption.OptionId == Guid.Empty) continue;
 
                 // validation checks here: multiple
 
-                db.Entry(new OptionValue { ItemId = itemId, OptionId = optionValue.OptionId }).State = EntityState.Added;
+                db.Entry(new ItemOption { ItemId = itemId, FieldId = itemOption.FieldId, OptionId = itemOption.OptionId }).State = EntityState.Added;
             }
 
             //foreach (var fileDTO in organisationDTO.Files)
@@ -56,11 +56,11 @@ namespace WEB.Models
         public static void DeleteFields(ApplicationDbContext db, Guid itemId, bool deleteItem = false)
         {
             // todo: put these in a transaction, use SQL
-            foreach (var userField in db.FieldValues.Where(o => o.ItemId == itemId).ToList())
-                db.Entry(userField).State = EntityState.Deleted;
+            foreach (var itemField in db.ItemFields.Where(o => o.ItemId == itemId).ToList())
+                db.Entry(itemField).State = EntityState.Deleted;
 
-            foreach (var userOption in db.OptionValues.Where(o => o.ItemId == itemId).ToList())
-                db.Entry(userOption).State = EntityState.Deleted;
+            foreach (var itemOption in db.ItemOptions.Where(o => o.ItemId == itemId).ToList())
+                db.Entry(itemOption).State = EntityState.Deleted;
 
             if (deleteItem)
             {

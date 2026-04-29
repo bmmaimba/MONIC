@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorService } from '../common/services/error.service';
 import { Error, Exception } from '../common/models/error.model';
 import { BreadcrumbService } from '../common/services/breadcrumb.service';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
     selector: 'error',
-    templateUrl: './error.component.html'
+    templateUrl: './error.component.html',
+    standalone: false
 })
 export class ErrorComponent implements OnInit {
 

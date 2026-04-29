@@ -1,0 +1,378 @@
+<app-page-title></app-page-title>
+
+<div class="alert alert-warning">
+    Sean's notes:
+    <ul>
+        <!--from the meeting with ian:-->
+        <li>some settings (eg) stack type, are now missing</li>
+        <li>legend should be on right (as option)</li>
+        <li>ability to have bar (not column) chart</li>
+        <li>order stack by a specific indicator</li>
+        <!--general:-->
+        <li>colors: when adding an indicator, set that colour to the setting, but allow override</li>
+        <li>'Appearance' items should mostly go with the indicator?</li>
+        <li>requires having indicators as rows with additional settings</li>
+        <li>make settings panel float/stick left/right, block-right? opacity?</li>
+        <li>move entities to x-axis panel, call it 'filter'?</li>
+        <li>add ChartType to each of primary/secondary, have line settings / marker settings / etc.</li>
+        <li>move legend into own panel?</li>
+
+    </ul>
+</div>
+
+<div class="card card-edit">
+
+    <div class="card-header">
+
+        <div class="card-header-title">
+            <h4>Chart<span *ngIf="!!chart?.name">: {{chart.name}}</span></h4>
+            <div>
+                <i class="fa fa-fw ms-1 fa-cloud-download cursor-pointer ms-2" ngbTooltip="Download as image" (click)="downloadChart()" *ngIf="options"></i>
+                <i class="fa fa-fw ms-1 fa-gear cursor-pointer ms-2" ngbTooltip="Download as image" (click)="showSettings(settingsPanel, 'end')"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div *ngIf="options" echarts [options]="options" (chartInit)="onChartInit($event)" [style.height.px]="settings.height"></div>
+
+        <div *ngIf="!options && chart" class="alert alert-info cursor-pointer" (click)="showSettings(settingsPanel, 'end')">
+            Configure your chart settings to produce the chart.
+        </div>
+
+    </div>
+
+</div>
+
+<ng-template #settingsPanel let-offcanvas>
+
+    <div class="offcanvas-body p-0">
+
+        <form id="form" name="form" novalidate #form="ngForm" [ngClass]="{ 'was-validated': form.submitted }">
+
+            <div ngbAccordion [closeOthers]="true">
+
+                <div ngbAccordionItem [collapsed]="false">
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton tabindex="-1">General</button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+
+                                <fieldset class="group">
+
+                                    <div class="row gx-3">
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+
+                                                <label for="name">
+                                                    Chart Name:
+                                                </label>
+
+                                                <input id="name" name="name" class="form-control" type="text" [(ngModel)]="chart.name" #name="ngModel" required (ngModelChange)="changeBreadcrumb()" maxlength="200" />
+
+                                                <div *ngIf="name.errors?.required" class="invalid-feedback">
+                                                    Name is required
+                                                </div>
+
+                                                <div *ngIf="name.errors?.maxlength" class="invalid-feedback">
+                                                    Name must be at most 200 characters long
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+
+                                                <label for="entities">
+                                                    Entities:
+                                                </label>
+
+                                                <div class="w-100">
+                                                    <button id="entities" name="entities" type="button" class="btn w-100 btn-outline-secondary" (click)="entityModal.open()">Entities ({{settings.entityIds.length}} selected)</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12" *ngIf="!isNew">
+                                            <div class="form-group">
+
+                                                <div class="w-100">
+                                                    <button id="deleteChart" name="deleteChart" type="button" class="btn w-100 btn-outline-danger" (click)="deleteChart()">Delete Chart</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </fieldset>
+
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <div ngbAccordionItem>
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton tabindex="-1">Series</button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody class="p-0">
+                            <ng-template>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-nowrap mb-0 align-middle">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Indicator</th>
+                                                <th class="w-50px text-end">
+                                                    <i class="fa fa-plus text-muted cursor-pointer" (click)="addSerie()"></i>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list cursor-pointer" cdkDropList (cdkDropListDropped)="drop($event)">
+                                            <tr *ngFor="let serie of settings.series; let $index = index" (click)="editSerie(serie)" cdkDrag cdkDragHandle (cdkDragStarted)="dragStart($event)">
+                                                <td>
+                                                    <i class="fa fa-sort me-1 text-gray-500 cursor-grab"></i>
+                                                    {{serie.indicator?.name}}
+                                                </td>
+                                                <td>
+                                                    <i class="fa fa-pencil text-muted me-2"></i>
+                                                    <i class="fa fa-times text-danger" (click)="deleteSerie($index)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <div ngbAccordionItem>
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton tabindex="-1">Appearance</button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+
+                                <fieldset class="group">
+
+                                    <div class="row gx-3">
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="legendPosition">
+                                                    Legend Position:
+                                                </label>
+
+                                                <select id="legendPosition"
+                                                        name="legendPosition"
+                                                        class="form-select"
+                                                        [(ngModel)]="settings.legendPosition"
+                                                        #legendPosition="ngModel"
+                                                        (ngModelChange)="settingChanged()">
+
+                                                    <option [ngValue]="LegendPosition.None">None</option>
+                                                    <option [ngValue]="LegendPosition.Top">Top</option>
+                                                    <option [ngValue]="LegendPosition.Bottom">Bottom</option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </fieldset>
+
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <div ngbAccordionItem>
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton>X-Axis</button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+
+                                <fieldset class="group">
+
+                                    <div class="row gx-3">
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+
+                                                <label for="xAxisSort" class="form-label">
+                                                    Sort by:{{settings.xAxisSort}}
+                                                </label>
+
+                                                <div class="d-flex gap-2">
+                                                    <select id="xAxisSort"
+                                                            name="xAxisSort"
+                                                            class="form-select w-50"
+                                                            [(ngModel)]="settings.xAxisSort"
+                                                            #stackType="ngModel"
+                                                            (ngModelChange)="settingChanged()">
+
+                                                        <option value="name">Name</option>
+                                                        <option value="value">Value</option>
+
+                                                    </select>
+                                                    <select id="xAxisSortDesc"
+                                                            name="xAxisSortDesc"
+                                                            class="form-select w-50"
+                                                            [(ngModel)]="settings.xAxisSortDesc"
+                                                            #stackType="ngModel"
+                                                            (ngModelChange)="settingChanged()">
+
+                                                        <option [ngValue]="false">Ascending</option>
+                                                        <option [ngValue]="true">Descending</option>
+
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="xAxisFontSize">
+                                                    X-Axis Font Size:
+                                                </label>
+
+                                                <input id="xAxisFontSize" name="xAxisFontSize" type="number" class="form-control" [(ngModel)]="settings.xAxisFontSize" #xAxisFontSize="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="xAxisRotation">
+                                                    X-Axis Rotation:
+                                                </label>
+
+                                                <input id="xAxisRotation" name="xAxisRotation" type="number" class="form-control" [(ngModel)]="settings.xAxisRotation" #xAxisRotation="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </fieldset>
+
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <div ngbAccordionItem>
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton>Layout</button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+
+                                <fieldset class="group">
+
+                                    <div class="row gx-3">
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="height">
+                                                    Height:
+                                                </label>
+
+                                                <input id="height" name="height" type="number" class="form-control" [(ngModel)]="settings.height" #height="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row gx-3">
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="gridLeft">
+                                                    Grid Left:
+                                                </label>
+
+                                                <input id="gridLeft" name="gridLeft" type="number" class="form-control" [(ngModel)]="settings.gridLeft" #gridLeft="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="gridRight">
+                                                    Grid Right:
+                                                </label>
+
+                                                <input id="gridRight" name="gridRight" type="number" class="form-control" [(ngModel)]="settings.gridRight" #gridRight="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="gridTop">
+                                                    Grid Top:
+                                                </label>
+
+                                                <input id="gridTop" name="gridTop" type="number" class="form-control" [(ngModel)]="settings.gridTop" #gridTop="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+
+                                                <label for="gridBottom">
+                                                    Grid Bottom:
+                                                </label>
+
+                                                <input id="gridBottom" name="gridBottom" type="number" class="form-control" [(ngModel)]="settings.gridBottom" #gridBottom="ngModel" (ngModelChange)="settingChanged()" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </fieldset>
+
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</ng-template>
+
+<entity-modal #entityModal (changes)="entitiesChanged($event)" [multiple]="true" [selectedItems]="settingsObjects.entities"></entity-modal>

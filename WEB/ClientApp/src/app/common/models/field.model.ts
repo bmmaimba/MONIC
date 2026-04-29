@@ -1,19 +1,23 @@
 import { SearchOptions, PagingHeaders } from './http.model';
 import { Group } from './group.model';
+import { OptionList } from './optionlist.model';
 import { FieldTypes, Sizes } from './enums.model';
-import { FieldValue } from './fieldvalue.model';
-import { Option } from './option.model';
+import { ItemField } from './itemfield.model';
+import { ItemOption } from './itemoption.model';
 
 export class Field {
     fieldId: string;
     name: string;
     fieldType: FieldTypes;
+    optionListId: string;
     organisation: boolean;
     entity: boolean;
     indicator: boolean;
     component: boolean;
     relationship: boolean;
     folder: boolean;
+    category: boolean;
+    subcategory: boolean;
     required: boolean;
     isUnique: boolean;
     size: Sizes;
@@ -27,19 +31,17 @@ export class Field {
     groupId: string;
     rows: number;
     group: Group;
+    optionList: OptionList;
 
-    fieldValues: FieldValue[];
-    options: Option[];
+    itemFields: ItemField[];
+    itemOptions: ItemOption[];
 
     constructor() {
         this.fieldId = "00000000-0000-0000-0000-000000000000";
-        this.organisation = true;
-        this.entity = true;
-        this.indicator = true;
         this.size = 1;
         this.rows = 5;
-        this.fieldValues = [];
-        this.options = [];
+        this.itemFields = [];
+        this.itemOptions = [];
     }
 }
 
@@ -49,6 +51,11 @@ export class FieldSearchOptions extends SearchOptions {
     organisation: boolean;
     entity: boolean;
     indicator: boolean;
+    component: boolean;
+    relationship: boolean;
+    folder: boolean;
+    category: boolean;
+    subcategory: boolean;
     groupId: string;
 }
 

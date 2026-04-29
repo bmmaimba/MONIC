@@ -122,6 +122,8 @@ namespace AuthorizationServer.Controllers
                 user.LastLoginDate = DateTime.UtcNow;
                 await userManager.UpdateAsync(user);
 
+                await CleanupExpiredTokensForUserAsync(user.Id);
+
                 // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
                 return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
@@ -192,6 +194,8 @@ namespace AuthorizationServer.Controllers
                     Scopes.OfflineAccess,
                     Scopes.Roles
                 }.Intersect(request.GetScopes()));
+
+                await CleanupExpiredTokensForUserAsync(user.Id);
 
                 // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
                 return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -332,5 +336,27 @@ namespace AuthorizationServer.Controllers
             return Ok(opts.Value.Password);
         }
 
+        private async System.Threading.Tasks.Task CleanupExpiredTokensForUserAsync(Guid userId)
+        {
+            await using var db = await _dbFactory.CreateDbContextAsync();
+
+            // Tokens: expired/redeemed AND older than the grace period
+            await db.Database.ExecuteSqlRawAsync(@"
+                DELETE FROM OpenIddictTokens
+                WHERE (ExpirationDate < GETUTCDATE() OR Status = 'Redeemed')
+                  AND CreationDate  < DATEADD(minute, -5, GETUTCDATE())
+                  AND Subject       = {0}
+            ", userId);
+
+            // Authorizations: orphaned AND older than the grace period
+            await db.Database.ExecuteSqlRawAsync(@"
+                DELETE a FROM OpenIddictAuthorizations a
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM OpenIddictTokens t
+                    WHERE t.AuthorizationId = a.Id)
+                  AND a.CreationDate < DATEADD(minute, -5, GETUTCDATE())
+                  AND a.Subject      = {0}",
+            userId);
+        }
     }
 }

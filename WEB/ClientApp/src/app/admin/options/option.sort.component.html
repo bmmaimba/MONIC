@@ -5,18 +5,18 @@
 
 <div class="table-responsive">
 
-    <table class="table table-hover table-striped table-nowrap mt-6 mb-0 align-middle">
+    <table class="table table-sm table-hover table-striped table-nowrap mt-6 mb-0 align-middle">
         <thead class="thead-light">
             <tr>
                 <th class="text-center w-20px"><i class="fas fa-sort"></i></th>
-                <th>Field</th>
+                <th>Option List</th>
                 <th>Name</th>
             </tr>
         </thead>
         <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="cursor-grab">
             <tr *ngFor="let option of options" cdkDrag cdkDragHandle (cdkDragStarted)="dragStart($event)">
                 <td class="text-center"><i class="fas fa-sort"></i></td>
-                <td>{{ option.field.name }}</td>
+                <td>{{ option.optionList.name }}</td>
                 <td>{{ option.name }}</td>
             </tr>
         </tbody>

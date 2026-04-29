@@ -1,111 +1,61 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<TypeScriptTarget>ES2021</TypeScriptTarget>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaProxyServerUrl>https://localhost:44401</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8478bfcd-a2e0-4e8e-8c09-579e68f0988d</UserSecretsId>
+  </PropertyGroup>
 
-	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<TypeScriptTarget>ES2021</TypeScriptTarget>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.2.0-beta.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.5.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.6.1" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Server" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Server.DataProtection" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Validation" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Validation.DataProtection" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.Validation.ServerIntegration" Version="7.2.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.3" />
+  </ItemGroup>
 
-	<PropertyGroup>
-		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-	</PropertyGroup>
+  <ItemGroup>
+    <None Include="ClientApp\**" Exclude="ClientApp\node_modules\**;ClientApp\dist\**;ClientApp\.angular\**" />
+  </ItemGroup>
 
-	<PropertyGroup>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<Nullable>disable</Nullable>
-		<IsPackable>false</IsPackable>
-		<SpaRoot>ClientApp\</SpaRoot>
-		<!--matches to the port in package.json start command-->
-		<SpaProxyServerUrl>https://localhost:44410</SpaProxyServerUrl>
-		<!--<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>-->
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ClientApp\dist\**" />
+    <Content Remove="ClientApp\dist\**" />
+    <EmbeddedResource Remove="ClientApp\dist\**" />
+    <None Remove="ClientApp\dist\**" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.3.4" />
-		<PackageReference Include="Azure.Identity" Version="1.12.0" />
-		<PackageReference Include="Betalgo.OpenAI" Version="8.3.0" />
-		<PackageReference Include="CsvHelper" Version="28.0.1" />
-		<PackageReference Include="EPPlus" Version="4.5.3.3" />
-		<PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.20" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Server" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Server.AspNetCore" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Server.DataProtection" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Validation" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Validation.AspNetCore" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Validation.DataProtection" Version="5.7.0" />
-		<PackageReference Include="OpenIddict.Validation.ServerIntegration" Version="5.7.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- Don't publish the SPA source files, but do show them in the project files list -->
-		<Compile Remove="wwwroot\**" />
-		<Content Remove="$(SpaRoot)**" />
-		<Content Remove="wwwroot\**" />
-		<EmbeddedResource Remove="wwwroot\**" />
-		<None Remove="$(SpaRoot)**" />
-		<None Remove="wwwroot\**" />
-		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
 
 	<ItemGroup>
-		<None Remove="ClientApp\src\assets\images\emaillogo.png" />
-		<None Remove="ClientApp\src\assets\images\reportlogo.png" />
-		<None Remove="ClientApp\src\app\common\models\download.model.ts" />
-	</ItemGroup>
-
-
-	<ItemGroup>
-		<Content Include="ClientApp\src\assets\favicon.ico">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\fonts\Roboto-Regular.ttf">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\images\emaillogo.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\images\reportlogo.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\images\logo.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\images\navbar-brand.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="ClientApp\src\assets\templates\email.html">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="compilerconfig.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="ClientApp\src\app\common\scroll-spy\" />
 		<Folder Include="ClientApp\src\assets\geojson\" />
 		<Folder Include="Migrations\" />
 		<Folder Include="Properties\PublishProfiles\" />
@@ -130,14 +80,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="appsettings.monic-migsa.json">
-	    <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-	  </Content>
+		<Content Update="appsettings.monic-gga.json">
+		  <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
+		<Content Update="appsettings.monic-uhc2030.json">
+		  <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
+		<Content Update="appsettings.monic-migsa.json">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
 	<Target Name="CustomCopyAppSettings" AfterTargets="Publish">
 		<Message Text="Copying appsettings file for $(ClientName) - CustomCopyAppSettings" Importance="high" />
-		<Copy SourceFiles="appsettings.$(ClientName).json" DestinationFiles="$(PublishDir)\appsettings.json" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+		<Copy SourceFiles="appsettings.$(ClientName).json" DestinationFiles="$(PublishDir)appsettings.json" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
 	</Target>
 
 	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
@@ -145,14 +101,14 @@
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install --force" />
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production" />
 
-		<!-- Include the newly-built files in the publish output -->
-		<ItemGroup>
-			<DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
-			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
-				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			</ResolvedFileToPublish>
-		</ItemGroup>
-	</Target>
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
 </Project>

@@ -13,7 +13,8 @@ import { Milestone } from '../../common/models/milestone.model';
         useExisting: forwardRef(() => TaskSelectComponent),
         multi: true
     }],
-    host: { 'class': 'app-select' }
+    host: { 'class': 'app-select' },
+    standalone: false
 })
 export class TaskSelectComponent implements OnInit, ControlValueAccessor {
 

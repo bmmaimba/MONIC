@@ -51,8 +51,8 @@ namespace WEB.Controllers
                 return NotFound();
 
             var item = await db.Items
-               .Include(o => o.FieldValues)
-               .Include(o => o.OptionValues)
+               .Include(o => o.ItemFields)
+               .Include(o => o.ItemOptions)
                .FirstOrDefaultAsync(o => o.ItemId == folderId);
 
             var organisationDTO = ModelFactory.Create(folder, true, false, item);
@@ -86,10 +86,13 @@ namespace WEB.Controllers
                 if (folder == null)
                     return NotFound();
 
+                if (!await db.Items.AnyAsync(o => o.ItemId == folder.FolderId))
+                    db.Entry(new Item { ItemId = folder.FolderId, ItemType = ItemType.Folder }).State = EntityState.Added;
+
                 db.Entry(folder).State = EntityState.Modified;
             }
 
-            await ItemFunctions.HydrateFieldsAsync(db, folder.FolderId, folderDTO.FieldValues, folderDTO.OptionValues);
+            await ItemFunctions.HydrateFieldsAsync(db, folder.FolderId, folderDTO.ItemFields, folderDTO.ItemOptions);
 
             ModelFactory.Hydrate(folder, folderDTO);
 

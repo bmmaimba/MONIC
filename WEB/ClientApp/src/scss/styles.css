@@ -4,6 +4,7 @@ main {
 
 body#app {
     min-height: 800px;
+    overflow-x: initial; /* else sticky-top doesn't work */
 }
 
 @media(min-width: 992px) {
@@ -307,10 +308,6 @@ nav.nav-tabs.nav ~ .tab-content {
     border-color: #dc3545;
 }
 
-html {
-    overflow-y: scroll;
-}
-
 #questionLogic:hover .d-none {
     display: block !important;
 }
@@ -368,10 +365,6 @@ quill-editor .ql-editor {
 input[type=text]:not(.app-select-input):read-only,
 input[type=date]:not(.app-select-input):read-only {
     background-color: #EDEEF0 !important;
-}
-
-fieldset.group .form-check {
-    padding-top: 8px;
 }
 
 app-file .input-group * {
@@ -543,6 +536,10 @@ table.table-hover > tbody > tr:hover > td {
 
         .card.card-edit > .card-header .card-header-title {
             color: white;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
         }
 
             .card.card-edit > .card-header .card-header-title h4 {
@@ -636,4 +633,14 @@ table.table-hover > tbody > tr:hover > td {
 
 .dropdown .dropdown-toggle::after {
     padding-left: 1em;
+}
+
+body#setup {
+    background-color: rgb(14, 34, 56);
+    padding-top: 50px;
+}
+
+input[type=color].form-control {
+    height: calc(1.5em + 1.25rem + calc(var(--bs-border-width) * 2));
+    padding: 0.625rem;
 }
